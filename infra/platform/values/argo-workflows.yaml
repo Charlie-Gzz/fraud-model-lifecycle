@@ -1,0 +1,31 @@
+# Argo Workflows runs the retraining pipeline in the `fml` namespace.
+commonLabels:
+  project: fraud-model-lifecycle
+
+workflow:
+  serviceAccount:
+    create: true
+    name: argo-workflow
+  rbac:
+    create: true
+
+controller:
+  workflowNamespaces:
+    - fml
+  resources:
+    requests: { cpu: 20m, memory: 64Mi }
+    limits: { memory: 256Mi }
+
+executor:
+  resources:
+    requests: { cpu: 10m, memory: 32Mi }
+    limits: { memory: 96Mi }
+
+server:
+  enabled: true
+  # Reached only through kubectl port-forward on 127.0.0.1, so no login screen.
+  authModes: ["server"]
+  secure: false
+  resources:
+    requests: { cpu: 10m, memory: 48Mi }
+    limits: { memory: 192Mi }

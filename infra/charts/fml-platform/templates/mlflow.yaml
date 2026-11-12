@@ -1,0 +1,54 @@
+# MLflow tracking server and model registry. Artifacts go to the S3 store.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: mlflow }
+  template:
+    metadata:
+      labels:
+        app: mlflow
+        {{- toYaml .Values.labels | nindent 8 }}
+    spec:
+      containers:
+        - name: mlflow
+          image: {{ .Values.mlflow.image }}
+          imagePullPolicy: Never
+          command: ["/bin/sh", "-c"]
+          args:
+            - >-
+              exec mlflow server
+              --host 0.0.0.0 --port 5000 --workers 1
+              --backend-store-uri "postgresql://mlflow:${POSTGRES_PASSWORD}@postgres:5432/mlflow"
+              --artifacts-destination "s3://{{ .Values.bucket }}/mlflow"
+              --serve-artifacts
+              --allowed-hosts "mlflow,mlflow:*,mlflow.fml,mlflow.fml:*,mlflow.fml.svc.cluster.local,mlflow.fml.svc.cluster.local:*,localhost,localhost:*,127.0.0.1,127.0.0.1:*"
+          env:
+            - { name: MLFLOW_S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+            - { name: AWS_DEFAULT_REGION, value: us-east-1 }
+            - { name: MLFLOW_DISABLE_AGENT_HINT, value: "1" }
+            # The server-side job runner (GenAI jobs) starts ~8 extra processes; not needed here.
+            - { name: MLFLOW_SERVER_ENABLE_JOB_EXECUTION, value: "false" }
+          envFrom:
+            - secretRef: { name: fml-secrets }
+          ports:
+            - { name: http, containerPort: 5000 }
+          readinessProbe:
+            httpGet: { path: /health, port: 5000 }
+            periodSeconds: 5
+            failureThreshold: 30
+          resources: {{- toYaml .Values.mlflow.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  selector: { app: mlflow }
+  ports:
+    - { name: http, port: 5000, targetPort: 5000 }

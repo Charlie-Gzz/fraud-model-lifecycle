@@ -1,0 +1,6 @@
+apiVersion: v2
+name: fml-platform
+description: Data services for the fraud model lifecycle (S3 object store, Postgres, Redis, MLflow).
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

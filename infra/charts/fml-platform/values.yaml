@@ -1,0 +1,32 @@
+# Defaults. infra/platform/values/fml-platform.yaml overrides these.
+labels:
+  project: fraud-model-lifecycle
+
+bucket: fml
+
+seaweedfs:
+  image: chrislusf/seaweedfs:4.51@sha256:f7a49e3f3972ebed5be2ed4befa4a0c68eb7bdddba6e692d42729ceb545134b8
+  storage: 4Gi
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 384Mi }
+
+postgres:
+  image: postgres:17.11-alpine3.23@sha256:3a5d537cf82c9dc297fe985add4a7e1111b5c9ec52439073968d0fec9cf1ed08
+  storage: 1Gi
+  resources:
+    requests: { cpu: 50m, memory: 96Mi }
+    limits: { memory: 256Mi }
+
+redis:
+  image: redis:8.8.4-alpine3.23@sha256:1273af45b299d2b8b60d0e400d90aa6c2c5b1794f01d6a7ca60ff3ba6e65efb5
+  maxmemory: 96mb
+  resources:
+    requests: { cpu: 20m, memory: 48Mi }
+    limits: { memory: 160Mi }
+
+mlflow:
+  image: fml-mlflow:0.1.0
+  resources:
+    requests: { cpu: 50m, memory: 384Mi }
+    limits: { memory: 768Mi }

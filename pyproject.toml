@@ -28,6 +28,10 @@ runtime = [
     "prometheus-client>=0.26,<0.27",
     "kubernetes>=37,<38",
 ]
+# Only installed in the Spark image (Spark and Java never run on the host).
+spark = [
+    "pyspark>=4.3,<4.4",
+]
 
 [dependency-groups]
 dev = [

@@ -27,6 +27,39 @@ def tools(force: bool = typer.Option(False, help="Re-download even if present.")
         typer.echo(f"{name:24s} {path.relative_to(REPO_ROOT)}")
 
 
+@app.command()
+def up(skip_images: bool = typer.Option(False, help="Reuse images already loaded.")) -> None:
+    """Create the kind cluster, install the platform, start port-forwards, smoke-check."""
+    from fml import platform
+
+    result = platform.up(skip_images=skip_images)
+    raise typer.Exit(0 if all(result.values()) else 1)
+
+
+@app.command()
+def down() -> None:
+    """Stop port-forwards and delete the cluster (images are kept for a fast restart)."""
+    from fml import platform
+
+    platform.down()
+
+
+@app.command()
+def status() -> None:
+    """Show pods, port-forwards and cluster memory."""
+    from fml import platform
+
+    platform.status()
+
+
+@app.command()
+def forward() -> None:
+    """(Re)start the 127.0.0.1 port-forwards."""
+    from fml import platform
+
+    platform.start_port_forwards()
+
+
 @app.command(context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
 def test(ctx: typer.Context) -> None:
     """Run the test suite. Extra arguments go straight to pytest."""

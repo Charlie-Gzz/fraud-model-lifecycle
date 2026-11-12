@@ -1,0 +1,7 @@
+name: control
+set: test
+description: No drift. Only weekly seasonality and day-to-day noise. Used to count false drift alarms
+  and unneeded retrains.
+n_days: 100
+n_users: 3000
+drift: []

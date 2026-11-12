@@ -1,0 +1,99 @@
+# S3-compatible object store (raw data, features, prediction logs, MLflow artifacts, reports).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: seaweedfs-data
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: {{ .Values.seaweedfs.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seaweedfs
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  replicas: 1
+  strategy: { type: Recreate }
+  selector:
+    matchLabels: { app: seaweedfs }
+  template:
+    metadata:
+      labels:
+        app: seaweedfs
+        {{- toYaml .Values.labels | nindent 8 }}
+    spec:
+      containers:
+        - name: seaweedfs
+          image: {{ .Values.seaweedfs.image }}
+          args:
+            - server
+            - -dir=/data
+            - -ip.bind=0.0.0.0
+            - -master.volumeSizeLimitMB=128
+            - -volume.max=0
+            - -s3
+            - -s3.config=/etc/seaweedfs/s3.json
+          ports:
+            - { name: s3, containerPort: 8333 }
+            - { name: master, containerPort: 9333 }
+          readinessProbe:
+            tcpSocket: { port: 8333 }
+            periodSeconds: 5
+          resources: {{- toYaml .Values.seaweedfs.resources | nindent 12 }}
+          volumeMounts:
+            - { name: data, mountPath: /data }
+            - { name: s3-config, mountPath: /etc/seaweedfs, readOnly: true }
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: seaweedfs-data }
+        - name: s3-config
+          secret: { secretName: seaweedfs-s3-config }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: seaweedfs
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+spec:
+  selector: { app: seaweedfs }
+  ports:
+    - { name: s3, port: 8333, targetPort: 8333 }
+    - { name: master, port: 9333, targetPort: 9333 }
+    # gRPC ports used by `weed shell` (bucket creation).
+    - { name: master-grpc, port: 19333, targetPort: 19333 }
+    - { name: filer, port: 8888, targetPort: 8888 }
+    - { name: filer-grpc, port: 18888, targetPort: 18888 }
+---
+# Create the bucket once the store is up. Safe to rerun.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seaweedfs-create-bucket
+  labels: {{- toYaml .Values.labels | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 20
+  template:
+    metadata:
+      labels: {{- toYaml .Values.labels | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: create-bucket
+          image: {{ .Values.seaweedfs.image }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              until nc -z seaweedfs 9333; do echo waiting; sleep 2; done
+              echo "s3.bucket.list" | weed shell -master=seaweedfs:9333 | grep -q "{{ .Values.bucket }}" && exit 0
+              echo "s3.bucket.create -name {{ .Values.bucket }}" | weed shell -master=seaweedfs:9333
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 128Mi }
