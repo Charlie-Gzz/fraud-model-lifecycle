@@ -1,8 +1,8 @@
 {
  "set": "dev",
  "config": {
-  "frozen": false,
-  "frozen_on": null,
+  "frozen": true,
+  "frozen_on": "2026-11-12",
   "alert_budget": 0.01,
   "seeds": {
    "dev": [

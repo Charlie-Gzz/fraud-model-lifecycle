@@ -7,9 +7,10 @@ bucket: fml
 seaweedfs:
   image: chrislusf/seaweedfs:4.51@sha256:f7a49e3f3972ebed5be2ed4befa4a0c68eb7bdddba6e692d42729ceb545134b8
   storage: 4Gi
+  # 384Mi was OOM-killed when the monitor read many small prediction-log files at once.
   resources:
-    requests: { cpu: 50m, memory: 128Mi }
-    limits: { memory: 384Mi }
+    requests: { cpu: 50m, memory: 256Mi }
+    limits: { memory: 1Gi }
 
 postgres:
   image: postgres:17.11-alpine3.23@sha256:3a5d537cf82c9dc297fe985add4a7e1111b5c9ec52439073968d0fec9cf1ed08

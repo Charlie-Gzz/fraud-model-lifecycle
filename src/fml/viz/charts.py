@@ -167,35 +167,31 @@ def detect_and_recover(summary: dict, set_name: str) -> list[Path]:
             vals = [r["time_to_recover"] for r in row["per_seed"]]
             got = [v for v in vals if v is not None]
             rec[(sc, p)] = (np.mean(got), min(got), max(got)) if got else None
-    a2.set_ylim(0, 50)
+    a2.set_ylim(0, 52)
     width = 0.26
     for i, p in enumerate(theme.POLICY_ORDER):
         style = theme.POLICY_STYLE[p]
+        # Legend entry once per policy, whatever the first scenario shows.
+        a2.bar(np.nan, np.nan, color=style["color"], label=style["label"])
         for j, sc in enumerate(SCENARIOS[:3]):
             v = rec[(sc, p)]
             xpos = j + (i - 1) * width
             row = t[f"{sc}/{p}"]
             never = sum(r["time_to_recover"] is None for r in row["per_seed"])
-            if v is None:
-                a2.text(
+            if v is None:  # no seed recovered: hatched outline to the top
+                a2.bar(
                     xpos,
-                    1,
-                    "never",
-                    ha="center",
-                    rotation=90,
-                    va="bottom",
-                    color=style["color"],
-                    fontsize=9,
+                    46,
+                    width * 0.92,
+                    fill=False,
+                    edgecolor=style["color"],
+                    hatch="//",
+                    lw=1,
+                    zorder=3,
                 )
+                a2.text(xpos, 47, "never", ha="center", fontsize=9, color=theme.TEXT)
                 continue
-            a2.bar(
-                xpos,
-                v[0],
-                width * 0.92,
-                color=style["color"],
-                zorder=3,
-                label=style["label"] if j == 0 else None,
-            )
+            a2.bar(xpos, v[0], width * 0.92, color=style["color"], zorder=3)
             a2.errorbar(
                 xpos, v[0], yerr=[[v[0] - v[1]], [v[2] - v[0]]], color=theme.TEXT, capsize=3
             )
@@ -205,7 +201,7 @@ def detect_and_recover(summary: dict, set_name: str) -> list[Path]:
     a2.set_ylabel("days until recall is back to 95% of baseline")
     a2.set_title("Time to recover")
     a2.grid(axis="x", visible=False)
-    a2.legend(loc="upper right")
+    a2.legend(loc="upper left", bbox_to_anchor=(0, -0.08), ncol=3)
     fastest = min((v for v in detect.values() if v), key=lambda v: v[0])
     slowest = max((v for v in detect.values() if v), key=lambda v: v[0])
     theme.suptitle(
@@ -247,6 +243,15 @@ def drift_at_detection(set_name: str) -> list[Path]:
     by = _by(load_runs(set_name))
     start = SET_DRIFT_START[set_name]
     fig, axes = plt.subplots(1, 3, figsize=(17, 6.5), sharey=True)
+    # One fixed feature order (by the largest score in any scenario), so rows line up.
+    peak = np.zeros(len(FEATURES))
+    for sc in SCENARIOS[:3]:
+        for r in by[(sc, "drift")]:
+            for e in r["events"]:
+                if e["type"] == "drift_detected" and e["day"] >= start and e.get("feature_scores"):
+                    peak = np.maximum(peak, [e["feature_scores"].get(f, 0.0) for f in FEATURES])
+                    break
+    order = np.argsort(peak)
     for ax, sc in zip(axes, SCENARIOS[:3], strict=True):
         scores = []
         for r in by[(sc, "drift")]:
@@ -274,8 +279,7 @@ def drift_at_detection(set_name: str) -> list[Path]:
             ax.set_title(SCENARIO_LABEL[sc])
             continue
         m = np.array(scores).mean(0)
-        order = np.argsort(m)
-        colors = [theme.WARN if m[i] >= 0.1 else theme.BORDER for i in order]
+        colors = [theme.WARN if v >= 0.1 else "#334155" for v in m[order]]
         ax.barh(np.array(FEATURES)[order], m[order], color=colors, zorder=3)
         ax.axvline(0.1, color=theme.ALERT, ls="--", lw=1)
         ax.text(0.102, -0.6, "drift threshold 0.1", color=theme.ALERT, fontsize=9)
@@ -286,8 +290,9 @@ def drift_at_detection(set_name: str) -> list[Path]:
         fig,
         "Each drift lights up different features; a new fraud pattern barely "
         "moves the inputs at all",
-        "Mean drift score per feature at the first post-drift alarm (drift-triggered "
-        "policy); amber = over Evidently's threshold",
+        "Mean drift score per feature at the first post-drift alarm (drift-triggered policy); "
+        "amber = over Evidently's threshold. The new fraud pattern was caught by the recall "
+        "drop on settled labels instead.",
     )
     fig.tight_layout(rect=(0, 0, 1, 0.88))
     return theme.save(fig, OUT, "drift_score_at_detection")

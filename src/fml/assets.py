@@ -7,6 +7,7 @@ import json
 import shutil
 
 from fml import REPO_ROOT, results
+from fml.replay import agreement
 from fml.site import build as site_build
 from fml.viz import charts, scenario_check, theme
 
@@ -145,6 +146,8 @@ def build(set_name: str = "test") -> list[str]:
     for s in ("dev", "test"):
         out += scenario_check.plot(s, seed=101 if s == "dev" else 201)
     done += [str(p.relative_to(REPO_ROOT)) for p in out]
+    agreement.build()
+    done.append("results/fullloop/agreement.md")
     site_build.build(set_name)
     (SITE / "data" / "headline.json").write_text(json.dumps(h, indent=2))
     shutil.copytree(REPO_ROOT / "assets" / "charts", SITE / "charts", dirs_exist_ok=True)

@@ -69,8 +69,9 @@ def train_challenger(P: Prepared, decision_day: int, seed: int, version: int) ->
     w = lifecycle.windows(decision_day)
     y_known = generator.known_labels(P.df, w.labels_as_of).to_numpy()
     tr = _mask(P, w.train)
-    booster = M.train(P.F[tr], y_known[tr], seed=seed + version)
-    ref = P.F[tr].sample(min(REFERENCE_ROWS, int(tr.sum())), random_state=version).copy()
+    # Same seed rule as the cluster pipeline: scenario seed + decision day.
+    booster = M.train(P.F[tr], y_known[tr], seed=seed + decision_day)
+    ref = P.F[tr].sample(min(REFERENCE_ROWS, int(tr.sum())), random_state=decision_day).copy()
     ref["score"] = M.score(booster, ref)
     ho = _mask(P, w.holdout)
     holdout = M.evaluate(M.score(booster, P.F[ho]), y_known[ho], P.day[ho], P.amount[ho])

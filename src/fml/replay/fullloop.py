@@ -108,20 +108,14 @@ def demo(scenario: str, seed: int, days: int | None = None, policy: str = "drift
     )
     kubectl("logs", "-f", f"job/{name}", "-n", "fml", check=False)
     while True:
-        out = kubectl(
-            "get",
-            "job",
-            name,
-            "-n",
-            "fml",
-            "-o",
-            "jsonpath={.status.succeeded}{.status.failed}",
-            quiet=True,
-        ).stdout
-        if out.strip():
+        status = json.loads(
+            kubectl("get", "job", name, "-n", "fml", "-o", "json", quiet=True).stdout
+        ).get("status", {})
+        if status.get("succeeded") or status.get("failed"):
             break
         time.sleep(5)
-    print(f"[fml] replay finished: {'ok' if out.strip() == '1' else 'FAILED'}")
+    ok = bool(status.get("succeeded"))
+    print(f"[fml] replay finished: {'ok' if ok else 'FAILED (see kubectl logs job/' + name + ')'}")
     collect(run)
     return run
 

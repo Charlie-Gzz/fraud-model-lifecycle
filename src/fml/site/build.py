@@ -164,7 +164,7 @@ def build(set_name: str = "test") -> list[Path]:
         k: {kk: vv for kk, vv in v.items() if kk != "per_seed"} for k, v in summary["table"].items()
     }
     (data_dir / "summary.json").write_text(
-        json.dumps({"set": set_name, "table": slim, "config": summary["config"]}, default=float)
+        json.dumps({"set": set_name, "table": slim, "config": summary["config"]}, default=str)
     )
     (data_dir / "scenarios.json").write_text(json.dumps(index, indent=1))
     return written

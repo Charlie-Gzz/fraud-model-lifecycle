@@ -126,7 +126,7 @@ def train(args) -> None:
     ho_scores = M.score(booster, df[ho])
     metrics = M.evaluate(ho_scores, y[ho], df["day"].to_numpy()[ho], df["amount"].to_numpy()[ho])
     threshold = M.threshold_for_budget(ho_scores)
-    ref = df[tr].sample(min(20_000, int(tr.sum())), random_state=args.seed)[FEATURES].copy()
+    ref = df[tr].sample(min(20_000, int(tr.sum())), random_state=args.day)[FEATURES].copy()
     ref["score"] = M.score(booster, ref)
 
     mlflow.set_experiment("fraud-lifecycle")

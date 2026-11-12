@@ -27,8 +27,9 @@ TXN_FIELDS = ["txn_id", "ts", "user_id", "merchant_id", "category", "device_id",
 FLUSH_WAIT_S = 5  # scorer pods flush their prediction logs every 3 s
 
 
-def _post(client: httpx.Client, url: str, payload: dict, tries: int = 20) -> httpx.Response:
-    """POST with retries. Safe to retry: online features ignore rows at or after `ts`."""
+def _post(client: httpx.Client, url: str, payload: dict, tries: int = 60) -> httpx.Response:
+    """POST with retries, long enough to ride out a pod restart (about 3 minutes).
+    Safe to retry: online features ignore rows at or after `ts`."""
     for i in range(tries):
         try:
             resp = client.post(url, json=payload)
@@ -36,7 +37,7 @@ def _post(client: httpx.Client, url: str, payload: dict, tries: int = 20) -> htt
                 return resp
         except httpx.HTTPError:
             pass
-        time.sleep(min(0.2 * (i + 1), 2))
+        time.sleep(min(0.2 * (i + 1), 4))
     raise RuntimeError(f"{url} kept failing")
 
 
@@ -133,7 +134,7 @@ def main() -> None:
 
             note = ""
             if d == lifecycle.FIRST_TRAIN_DAY:
-                wf = k8s.submit_retrain(args.run, d, args.seed, "bootstrap")
+                wf = k8s.submit_retrain(args.run, d, args.seed + d, "bootstrap")
                 _post(mon, f"{MONITOR}/attempt", {"run": args.run, "day": d})
                 events.emit(
                     args.run,

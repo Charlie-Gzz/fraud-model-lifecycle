@@ -185,6 +185,6 @@ def write(set_name: str = "test", out_dir: Path | None = None) -> Path:
     summary = build(set_name)
     out_dir = out_dir or REPO_ROOT / "results"
     path = out_dir / f"summary_{set_name}.json"
-    path.write_text(json.dumps(summary, indent=1, default=float))
+    path.write_text(json.dumps(summary, indent=1, default=str))
     (out_dir / f"summary_{set_name}.md").write_text(markdown(summary))
     return path

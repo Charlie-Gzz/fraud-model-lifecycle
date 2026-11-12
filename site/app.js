@@ -93,7 +93,8 @@
     const yTop0 = m.t, yEv0 = yTop0 + hTop + gap, yDr0 = yEv0 + hEv + gap, yCh0 = yDr0 + hDrift + gap;
     const H = yCh0 + hChamp + 26;
     const days = current.days;
-    const d0 = days[0].day, d1 = days[days.length - 1].day;
+    const evDays = current.events.map((e) => e.day);
+    const d0 = Math.min(days[0].day, ...evDays), d1 = days[days.length - 1].day;
     const x = (d) => m.l + ((d - d0) / Math.max(1, d1 - d0)) * (W - m.l - m.r);
     const yP = (v) => yTop0 + hTop - v * hTop;
     const dmax = Math.max(0.3, ...days.map((d) => d.drift || 0)) * 1.1;
