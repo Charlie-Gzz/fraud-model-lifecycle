@@ -48,15 +48,34 @@ No cluster needed for the numbers: `uv run fml backtest --set test` reruns the p
 
 ## How it works
 
-<!-- HOW -->
+1. **Data.** A seeded generator makes 110 days of card transactions for 3,000 users (about 4,700 a day). Five fraud patterns: card testing, account takeover (a third from the victim's own hijacked phone), quiet single stolen-card purchases, and two that only appear with drift: a scam paid from the victim's own phone at new merchants, and cash-outs in a new crypto category. Legit look-alikes (in-app purchase bursts, new phones, the odd big purchase) keep the problem honest: about 77% recall at the budget before drift, not 99%.
+2. **Delayed labels.** Fraud is reported 0.5 to about 10 days after it happens (median 2). A day counts as "settled" 3 days later. Training, the promotion gate and the monitor's recall only use labels that would have arrived by that simulated day.
+3. **Features.** Twelve per-user features (counts and sums over 1 hour, 24 hours and 7 days, distinct merchants, amount vs the user's 7-day average, new device, merchant not used in 7 days, time since last transaction). One definition, three implementations: Spark for training, Redis for serving, numpy for the fast backtest. Every retrain checks Spark against the features the scorer actually used.
+4. **Serving.** FastAPI scores each transaction with LightGBM, flags the top 1% of scores (the analysts' daily review budget), exports Prometheus metrics, and logs every request to S3.
+5. **Monitoring.** At the end of each simulated day the monitor compares the last 7 days of traffic with the champion's training data using Evidently (Wasserstein for numbers, Jensen-Shannon for categories, threshold 0.1), checks the score distribution, and measures recall on settled labels.
+6. **Retraining policy.** Retrain when a feature drifts for 3 days in a row, the score distribution drifts, or settled-label recall drops 15 points below the champion's holdout recall. At most once a week, plus two weekly follow-up retrains after an alarm, because labels for a new pattern keep arriving for weeks.
+7. **Pipeline.** An Argo Workflow gathers the labeled window, builds features with Spark, checks parity, trains a LightGBM challenger on 21 settled days, and compares it with the champion on the 5 most recent settled days. Only a challenger that catches more fraud at the budget passes. It is registered in MLflow with a model card and the `challenger` alias.
+8. **Canary.** The workflow points the Argo Rollout at the new version: 20%, 50%, then 100% of pods, while Prometheus analysis watches error rate, p95 latency and flag rate. A failure rolls back automatically. Success moves the `champion` alias.
+9. **Policy comparison.** The fast backtest runs the same windows, policy, drift check, training and gate in-process, so every scenario x policy x seed runs in minutes. Settings were tuned on dev scenarios and frozen before the test scenarios (different seeds and drift timing) were run.
 
 ## Things that went wrong
 
-<!-- WRONG -->
+- **MinIO is gone.** Its container images are no longer published, so the S3 store is SeaweedFS. The code only sees an S3 endpoint.
+- **MLflow ate 1.9 GB and got OOM-killed.** MLflow 3's server starts eight job-runner processes by default. One environment variable (`MLFLOW_SERVER_ENABLE_JOB_EXECUTION=false`) brings it to 360 MB.
+- **The first synthetic data was too easy.** 99% recall at a 1% budget is not believable. Harder fraud and legit look-alikes, tuned on dev data only, brought it to about 77%.
+- **"Retrain on drift" lost to "retrain weekly" at first.** It retrained once and went quiet, while labels for a new fraud pattern arrive over weeks. Follow-up retrains fixed the cause. Both versions are kept in `results/archive/`.
+- **A feature looked like drift on the control.** "Never used this merchant before" keeps falling as simulated histories fill up, so the monitor fired 4 to 17 false alarms per dev run. Redefining it as "not used in the last 7 days" and requiring 3 days of persistence removed nearly all of them.
+- **The object store ran out of memory** when the monitor read hundreds of small prediction-log files at once. The limit went from 384 MB to 1 GB.
 
 ## Limitations
 
-<!-- LIMITS -->
+- **Synthetic data.** The fraud patterns and drift are designed, not observed. Real fraud adapts to the model, which this simulation does not.
+- **One laptop cluster.** Single-node kind, single replicas, no high availability. Latency numbers are for this setup only.
+- **Canary by pod count.** Without a service mesh, "20% of traffic" means 1 of 5 pods. Fine for a demo, coarse for production.
+- **Simulated clock.** The replay is the clock, and it pauses while a retraining workflow trains. In production, traffic would keep flowing during training.
+- **Small daily fraud counts** (about 20 a day) make daily recall noisy. Results pool days and report the spread over seeds.
+- **Label model is simple.** Delays are i.i.d. and fraud never gets reported as legit. Real chargeback data is messier.
+- **Prediction drift was never the signal.** In every scenario, alarms came from feature drift or the recall drop.
 
 ## Cost to reproduce
 
