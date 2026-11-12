@@ -1,8 +1,8 @@
 # Policy comparison settings. Tuned on the dev scenarios only.
 # `frozen` is set to true (with a date) before the test scenarios are run; after that,
 # any change must be logged in docs/DECISIONS.md together with the earlier numbers.
-frozen: false
-frozen_on: null
+frozen: true
+frozen_on: 2026-11-12  # after dev design v3, before any test-set run
 
 alert_budget: 0.01
 

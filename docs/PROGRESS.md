@@ -2,22 +2,23 @@
 
 ## Status
 - **M0 Setup:** done. Private repo pushed.
-- **M1 Platform up:** first `fml up` worked after two fixes (MLflow job runner, SeaweedFS gRPC ports). Clean `fml down` (14 s) + `fml up` from scratch in progress to confirm.
-- **M2 Data generator:** done. Tests for determinism, drift start day, label delay. `assets/charts/scenario_check_{dev,test}.png` confirm drift timing.
-- **M3 Features + parity:** numpy batch, Redis online and Spark implementations written. Batch vs online parity passes in tests (fakeredis). Spark-in-cluster parity runs as a workflow step (not yet run).
-- **M4-M7:** code written (training/gate, MLflow registry, scorer service, Rollout + analysis, monitor, retrain WorkflowTemplate, replay, collect). Not yet run on the cluster.
-- **M8:** backtest engine + resumable runner written. Dev set (tuning) runs in progress.
+- **M1 Platform up:** done. Clean `fml down` (14 s) then `fml up` from scratch: 16 min including first image builds, all 9 services healthy, 4.0 GB idle.
+- **M2 Data generator:** done. `assets/charts/scenario_check_{dev,test}.png`.
+- **M3 Features + parity:** done. Spark job runs in the cluster; parity on 172,045 transactions, max diff 1.8e-12 (first run, before the `new_merchant_7d` change; rerun pending).
+- **M4 Training + registry:** done. Bootstrap model registered in MLflow with alias `champion`, model-card tags.
+- **M5 Serving + canary:** done. Canary 20/50/100 promoted v1; broken model (schema mismatch) rolled back automatically in 52 s by the error-rate analysis (`results/cluster/broken_model_rollback.json`). Load test 424 req/s, p95 67 ms (`results/cluster/loadtest.json`).
+- **M6/M7:** monitor + workflow + replay written and run end to end for 37 days. Full 110-day dev run in progress (`.run/demo2.log`).
+- **M8:** backtest + runner + `fml results` written. Dev design v3 running (v1 and v2 archived in `results/archive/`). Test set NOT run yet; config NOT frozen yet.
+- **M9:** site (index/results), charts, architecture diagram (done, reviewed), screenshot/video script written; nothing final yet.
 
 ## Log
-- 2026-11-12: Environment checked. git 2.55, gh logged in with workflow scope, Docker Desktop 28.2.2 with 15.6 GB and 12 CPUs (normal profile), uv 0.13.7, Python 3.12.16 via uv, PyPI / GitHub / Helm repos reachable, no ANTHROPIC_API_KEY set.
-- 2026-11-12: Pinned CLI tools downloaded to `.tools/` and checksum-verified (`uv run fml tools`).
-- 2026-11-12: MinIO images are no longer published; switched the object store to SeaweedFS (S3 API).
-- 2026-11-12: MLflow 3.18 server started 8 job-runner processes (1.9 GB) and got OOM-killed. `MLFLOW_SERVER_ENABLE_JOB_EXECUTION=false` brings it to 360 MB.
-- 2026-11-12: Idle platform memory: 4.0 GB (docker stats on the kind node).
-- 2026-11-12: Generator made harder on dev data only (legit look-alikes, hijacked-device takeovers, quiet stolen-card fraud): baseline recall at 1% budget went from 0.99 (not credible) to about 0.80.
-- 2026-11-12: Images: runtime 1.8 GB, spark 3.0 GB (first build). Spark image slimmed to only what the Spark step imports (rebuild pending).
+- 2026-11-12: Environment checked (see DECISIONS). Tools pinned in `infra/tools.toml`.
+- 2026-11-12: MinIO images gone; SeaweedFS instead. MLflow job runner disabled (OOM).
+- 2026-11-12: Dev v1 → v2 (bootstrap day 35, 110-day scenarios, per-feature alarm, follow-ups). v2 → v3: `is_new_merchant` redefined as `new_merchant_7d` (stationary) and data drift must persist 3 days (v2 had 4-17 false alarms before drift on every dev seed).
+- 2026-11-12: Policy chart colours validated with the dataviz palette validator (dark surface).
 
 ## Next step
-1. When `fml up` finishes: restore `k8s/kustomization.pending.yaml` to `k8s/kustomization.yaml`, rebuild images (`fml images`), `fml apply`.
-2. Smoke-test the scorer, then run the bootstrap workflow (Spark features, parity, train, gate, canary) with `fml demo --days 30`.
-3. Review dev backtest results; tune drift thresholds on dev only; freeze `configs/experiment.yaml`.
+1. Check dev v3 results (`uv run fml results --set dev`). If false alarms on control are low, freeze `configs/experiment.yaml` (frozen: true, date) and log it.
+2. Run test set: `uv run fml backtest --set test` (about 30 min).
+3. Full loop on the test scenarios (`uv run fml demo --scenario test/<name> --seed 201`), with `python -m fml.viz.screens canary` running alongside for the canary screenshot.
+4. `uv run fml assets`, screenshots, video, README, HANDOFF.

@@ -159,6 +159,30 @@ def assets(set_name: str = typer.Option("test", "--set")) -> None:
         typer.echo(f"wrote {line}")
 
 
+@app.command()
+def screens(
+    what: str = typer.Argument("site", help="site | cluster | canary | video | diagrams"),
+    workflow: str = typer.Option(None, help="Argo workflow to capture (cluster screens)"),
+) -> None:
+    """Screenshots and the walkthrough video (headless Chromium)."""
+    from fml.viz import render
+    from fml.viz import screens as s
+
+    if what == "site":
+        s.site_screens()
+    elif what == "cluster":
+        s.cluster_screens(workflow)
+    elif what == "canary":
+        s.canary_screen()
+    elif what == "video":
+        s.video()
+    elif what == "diagrams":
+        for p in render.diagrams():
+            typer.echo(f"wrote {p}")
+    else:
+        raise typer.BadParameter(what)
+
+
 @app.command(context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
 def test(ctx: typer.Context) -> None:
     """Run the test suite. Extra arguments go straight to pytest."""
