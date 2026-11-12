@@ -78,7 +78,7 @@ def apply() -> None:
     """Apply the app manifests in k8s/ (scorer Rollout, monitor, workflow, alerts, dashboard)."""
     from fml import platform
 
-    platform.kubectl("apply", "-k", "k8s")
+    platform.apply_manifests()
 
 
 @app.command()

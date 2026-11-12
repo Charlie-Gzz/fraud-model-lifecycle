@@ -292,13 +292,34 @@ def up(skip_images: bool = False) -> dict[str, bool]:
     terraform("platform", "apply", "-auto-approve", tf_vars=tf_vars)
     if (REPO_ROOT / "k8s" / "kustomization.yaml").exists():
         log("applying app manifests (k8s/)")
-        kubectl("apply", "-k", "k8s", quiet=True)
+        apply_manifests()
     wait_ready()
     start_port_forwards()
     result = smoke_check()
     for name, ok in result.items():
         log(f"  {'ok ' if ok else 'FAIL'} {name}")
     return result
+
+
+def apply_manifests() -> None:
+    """kubectl apply -k k8s, but keep the model version the scorer is serving.
+
+    The manifest says MODEL_VERSION=none (warm-up). Re-applying it to a live cluster would
+    start a canary back to "no model", so the live value is put back right away.
+    """
+    os.environ["KUBECONFIG"] = str(KUBECONFIG)
+    from fml.pipeline import rollout
+
+    try:
+        live = rollout.model_version(rollout.get_rollout())
+    except Exception:  # first install: no Rollout yet
+        live = None
+    kubectl("apply", "-k", "k8s", quiet=True)
+    if live and live != "none" and rollout.model_version(rollout.get_rollout()) != live:
+        rollout.set_model_version(live)
+        time.sleep(2)
+        rollout.promote_full()
+        log(f"kept the live model version v{live}")
 
 
 def down() -> None:

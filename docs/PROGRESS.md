@@ -8,7 +8,7 @@
 - **M4 Training + registry:** done. Bootstrap model registered in MLflow with alias `champion`, model-card tags.
 - **M5 Serving + canary:** done. Canary 20/50/100 promoted v1; broken model (schema mismatch) rolled back automatically in 52 s by the error-rate analysis (`results/cluster/broken_model_rollback.json`). Load test 424 req/s, p95 67 ms (`results/cluster/loadtest.json`).
 - **M6/M7:** monitor + workflow + replay written and run end to end for 37 days. Full 110-day dev run in progress (`.run/demo2.log`).
-- **M8:** backtest + runner + `fml results` written. Dev design v3 running (v1 and v2 archived in `results/archive/`). Test set NOT run yet; config NOT frozen yet.
+- **M8:** config frozen after dev v3; test set done (60 runs, `results/summary_test.md`). Full loops on the cluster in progress.
 - **M9:** site (index/results), charts, architecture diagram (done, reviewed), screenshot/video script written; nothing final yet.
 
 ## Log
@@ -17,8 +17,11 @@
 - 2026-11-12: Dev v1 → v2 (bootstrap day 35, 110-day scenarios, per-feature alarm, follow-ups). v2 → v3: `is_new_merchant` redefined as `new_merchant_7d` (stationary) and data drift must persist 3 days (v2 had 4-17 false alarms before drift on every dev seed).
 - 2026-11-12: Policy chart colours validated with the dataviz palette validator (dark surface).
 
+- 2026-11-12: Test set run (60 backtests, frozen config). Full loops for the 4 test scenarios (seed 201) running via `scripts/run_fullloops.sh`.
+- 2026-11-12: **Incident during test/new_fraud_pattern full loop:** I re-applied `k8s/` to update the Grafana dashboard, which reset the Rollout to MODEL_VERSION=none and started a canary to warm-up mode around simulated day 91. Restored the champion (v6) within about a minute. For that window up to 1 of 5 pods returned no score. `fml apply` now keeps the live model version. Effect is quantified in the run's daily `served_by` counts.
+
 ## Next step
-1. Check dev v3 results (`uv run fml results --set dev`). If false alarms on control are low, freeze `configs/experiment.yaml` (frozen: true, date) and log it.
-2. Run test set: `uv run fml backtest --set test` (about 30 min).
-3. Full loop on the test scenarios (`uv run fml demo --scenario test/<name> --seed 201`), with `python -m fml.viz.screens canary` running alongside for the canary screenshot.
-4. `uv run fml assets`, screenshots, video, README, HANDOFF.
+1. Wait for `scripts/run_fullloops.sh` (log: `.run/fullloops.log`) to finish all 4 test scenarios; each is collected into `results/fullloop/`.
+2. `uv run fml assets` (charts, agreement table, site data), then `uv run fml screens site` and `uv run fml screens cluster --workflow <a drift retrain workflow>`; review every image.
+3. `uv run fml screens video` (while Grafana still has recent data).
+4. Fill README placeholders (HERO, HEADLINE, RESULTS, COST), write HANDOFF, final secret scan, fresh-clone quickstart check, `fml down`.

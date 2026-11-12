@@ -11,7 +11,7 @@ data:
     \  \"fml\"\n ],\n \"timezone\": \"utc\",\n \"schemaVersion\": 39,\n \"editable\": false,\n \"time\": {\n  \"from\": \"\
     now-30m\",\n  \"to\": \"now\"\n },\n \"refresh\": \"10s\",\n \"panels\": [\n  {\n   \"type\": \"stat\",\n   \"title\"\
     : \"Requests / sec\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"\
-    gridPos\": {\n    \"x\": 0,\n    \"y\": 0,\n    \"w\": 4.8,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\"\
+    gridPos\": {\n    \"x\": 0,\n    \"y\": 0,\n    \"w\": 5,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\"\
     : {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"sum(rate(fml_requests_total[1m]))\"\
     ,\n     \"legendFormat\": \"\",\n     \"refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"colorMode\": \"background\"\
     ,\n    \"graphMode\": \"area\",\n    \"textMode\": \"value\",\n    \"reduceOptions\": {\n     \"calcs\": [\n      \"lastNotNull\"\
@@ -20,8 +20,8 @@ data:
     mode\": \"absolute\",\n      \"steps\": [\n       {\n        \"color\": \"#2DD4BF\",\n        \"value\": null\n      \
     \ }\n      ]\n     }\n    },\n    \"overrides\": []\n   },\n   \"id\": 1\n  },\n  {\n   \"type\": \"stat\",\n   \"title\"\
     : \"p95 latency\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\"\
-    : {\n    \"x\": 4.8,\n    \"y\": 0,\n    \"w\": 4.8,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\"\
-    : {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"histogram_quantile(0.95,\
+    : {\n    \"x\": 5,\n    \"y\": 0,\n    \"w\": 5,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\":\
+    \ {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"histogram_quantile(0.95,\
     \ sum by (le) (rate(fml_request_latency_seconds_bucket[1m])))\",\n     \"legendFormat\": \"\",\n     \"refId\": \"A\"\n\
     \    }\n   ],\n   \"options\": {\n    \"colorMode\": \"background\",\n    \"graphMode\": \"area\",\n    \"textMode\":\
     \ \"value\",\n    \"reduceOptions\": {\n     \"calcs\": [\n      \"lastNotNull\"\n     ]\n    }\n   },\n   \"fieldConfig\"\
@@ -29,9 +29,9 @@ data:
     \    \"mode\": \"thresholds\"\n     },\n     \"thresholds\": {\n      \"mode\": \"absolute\",\n      \"steps\": [\n  \
     \     {\n        \"color\": \"#2DD4BF\",\n        \"value\": null\n       }\n      ]\n     }\n    },\n    \"overrides\"\
     : []\n   },\n   \"id\": 2\n  },\n  {\n   \"type\": \"stat\",\n   \"title\": \"Flag rate\",\n   \"datasource\": {\n   \
-    \ \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 9.6,\n    \"y\": 0,\n \
-    \   \"w\": 4.8,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
-    ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"sum(rate(fml_flagged_total[5m])) / sum(rate(fml_predictions_total[5m]))\"\
+    \ \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 10,\n    \"y\": 0,\n  \
+    \  \"w\": 5,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n\
+    \      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"sum(rate(fml_flagged_total[5m])) / sum(rate(fml_predictions_total[5m]))\"\
     ,\n     \"legendFormat\": \"\",\n     \"refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"colorMode\": \"background\"\
     ,\n    \"graphMode\": \"area\",\n    \"textMode\": \"value\",\n    \"reduceOptions\": {\n     \"calcs\": [\n      \"lastNotNull\"\
     \n     ]\n    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n     \"unit\": \"percentunit\",\n     \"decimals\"\
@@ -40,8 +40,8 @@ data:
     \       },\n       {\n        \"color\": \"#F59E0B\",\n        \"value\": 0.02\n       },\n       {\n        \"color\"\
     : \"#EF4444\",\n        \"value\": 0.03\n       }\n      ]\n     }\n    },\n    \"overrides\": []\n   },\n   \"id\": 3\n\
     \  },\n  {\n   \"type\": \"stat\",\n   \"title\": \"Champion version\",\n   \"datasource\": {\n    \"type\": \"prometheus\"\
-    ,\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 14.4,\n    \"y\": 0,\n    \"w\": 4.8,\n    \"h\"\
-    : 5\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\
+    ,\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 15,\n    \"y\": 0,\n    \"w\": 5,\n    \"h\": 5\n\
+    \   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\
     \n     },\n     \"expr\": \"max(fml_champion_version)\",\n     \"legendFormat\": \"\",\n     \"refId\": \"A\"\n    }\n\
     \   ],\n   \"options\": {\n    \"colorMode\": \"background\",\n    \"graphMode\": \"area\",\n    \"textMode\": \"value\"\
     ,\n    \"reduceOptions\": {\n     \"calcs\": [\n      \"lastNotNull\"\n     ]\n    }\n   },\n   \"fieldConfig\": {\n \
@@ -49,8 +49,8 @@ data:
     \  \"mode\": \"thresholds\"\n     },\n     \"thresholds\": {\n      \"mode\": \"absolute\",\n      \"steps\": [\n    \
     \   {\n        \"color\": \"#2DD4BF\",\n        \"value\": null\n       }\n      ]\n     }\n    },\n    \"overrides\"\
     : []\n   },\n   \"id\": 4\n  },\n  {\n   \"type\": \"stat\",\n   \"title\": \"Drift status\",\n   \"datasource\": {\n\
-    \    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 19.2,\n    \"y\": 0,\n\
-    \    \"w\": 4.8,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
+    \    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 20,\n    \"y\": 0,\n\
+    \    \"w\": 4,\n    \"h\": 5\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
     ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_drift_alarm)\",\n     \"legendFormat\": \"\",\n  \
     \   \"refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"colorMode\": \"background\",\n    \"graphMode\": \"area\"\
     ,\n    \"textMode\": \"value\",\n    \"reduceOptions\": {\n     \"calcs\": [\n      \"lastNotNull\"\n     ]\n    }\n \
@@ -78,73 +78,70 @@ data:
     \n    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n     \"unit\": \"percentunit\",\n     \"max\": null,\n   \
     \  \"color\": {\n      \"mode\": \"palette-classic\"\n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\"\
     : 8,\n      \"showPoints\": \"never\"\n     }\n    },\n    \"overrides\": []\n   },\n   \"id\": 7\n  },\n  {\n   \"type\"\
-    : \"timeseries\",\n   \"title\": \"Data drift: share of drifted features (alarm at 25%)\",\n   \"datasource\": {\n   \
-    \ \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 0,\n    \"y\": 13,\n  \
-    \  \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n\
-    \      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_drift_share)\",\n     \"legendFormat\": \"drift share\"\
-    ,\n     \"refId\": \"A\"\n    },\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\
-    \n     },\n     \"expr\": \"max(fml_prediction_drift)\",\n     \"legendFormat\": \"prediction drift\",\n     \"refId\"\
-    : \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\",\n     \"placement\": \"bottom\"\
-    \n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n   \
-    \  \"unit\": \"percentunit\",\n     \"max\": null,\n     \"color\": {\n      \"mode\": \"palette-classic\"\n     },\n\
-    \     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n     }\n   \
-    \ },\n    \"overrides\": [\n     {\n      \"matcher\": {\n       \"id\": \"byName\",\n       \"options\": \"drift share\"\
-    \n      },\n      \"properties\": [\n       {\n        \"id\": \"color\",\n        \"value\": {\n         \"mode\": \"\
-    fixed\",\n         \"fixedColor\": \"#F59E0B\"\n        }\n       }\n      ]\n     },\n     {\n      \"matcher\": {\n\
-    \       \"id\": \"byName\",\n       \"options\": \"prediction drift\"\n      },\n      \"properties\": [\n       {\n \
-    \       \"id\": \"color\",\n        \"value\": {\n         \"mode\": \"fixed\",\n         \"fixedColor\": \"#A78BFA\"\n\
-    \        }\n       }\n      ]\n     }\n    ]\n   },\n   \"id\": 8\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\"\
-    : \"Recall at the alert budget, settled labels only\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\"\
-    : \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 12,\n    \"y\": 13,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"\
-    targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n\
-    \     \"expr\": \"max(fml_delayed_recall)\",\n     \"legendFormat\": \"recall\",\n     \"refId\": \"A\"\n    },\n    {\n\
-    \     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_delayed_pr_auc)\"\
-    ,\n     \"legendFormat\": \"PR-AUC\",\n     \"refId\": \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n   \
-    \  \"displayMode\": \"list\",\n     \"placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n\
-    \    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n     \"unit\": \"percentunit\",\n     \"max\": 1,\n     \"\
-    color\": {\n      \"mode\": \"palette-classic\"\n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\"\
-    : 8,\n      \"showPoints\": \"never\"\n     }\n    },\n    \"overrides\": [\n     {\n      \"matcher\": {\n       \"id\"\
-    : \"byName\",\n       \"options\": \"recall\"\n      },\n      \"properties\": [\n       {\n        \"id\": \"color\"\
-    ,\n        \"value\": {\n         \"mode\": \"fixed\",\n         \"fixedColor\": \"#2DD4BF\"\n        }\n       }\n  \
-    \    ]\n     },\n     {\n      \"matcher\": {\n       \"id\": \"byName\",\n       \"options\": \"PR-AUC\"\n      },\n\
-    \      \"properties\": [\n       {\n        \"id\": \"color\",\n        \"value\": {\n         \"mode\": \"fixed\",\n\
-    \         \"fixedColor\": \"#A78BFA\"\n        }\n       }\n      ]\n     }\n    ]\n   },\n   \"id\": 9\n  },\n  {\n \
-    \  \"type\": \"timeseries\",\n   \"title\": \"Drift score per feature\",\n   \"datasource\": {\n    \"type\": \"prometheus\"\
+    : \"timeseries\",\n   \"title\": \"Share of features drifting (alarm: any feature, 3 days in a row)\",\n   \"datasource\"\
+    : {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 0,\n    \"y\": 13,\n\
+    \    \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
+    ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_drift_share)\",\n     \"legendFormat\": \"drifted\
+    \ features\",\n     \"refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\"\
+    ,\n     \"placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\"\
+    : {\n    \"defaults\": {\n     \"unit\": \"percentunit\",\n     \"max\": 1,\n     \"color\": {\n      \"mode\": \"palette-classic\"\
+    \n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n \
+    \    }\n    },\n    \"overrides\": [\n     {\n      \"matcher\": {\n       \"id\": \"byName\",\n       \"options\": \"\
+    drifted features\"\n      },\n      \"properties\": [\n       {\n        \"id\": \"color\",\n        \"value\": {\n  \
+    \       \"mode\": \"fixed\",\n         \"fixedColor\": \"#F59E0B\"\n        }\n       }\n      ]\n     }\n    ]\n   },\n\
+    \   \"id\": 8\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\": \"Recall at the alert budget, settled labels only\"\
+    ,\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"\
+    x\": 12,\n    \"y\": 13,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n    \
+    \  \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_delayed_recall)\",\n  \
+    \   \"legendFormat\": \"recall\",\n     \"refId\": \"A\"\n    },\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
+    ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_delayed_pr_auc)\",\n     \"legendFormat\": \"PR-AUC\"\
+    ,\n     \"refId\": \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\",\n     \"\
+    placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\": {\n \
+    \   \"defaults\": {\n     \"unit\": \"percentunit\",\n     \"max\": 1,\n     \"color\": {\n      \"mode\": \"palette-classic\"\
+    \n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n \
+    \    }\n    },\n    \"overrides\": [\n     {\n      \"matcher\": {\n       \"id\": \"byName\",\n       \"options\": \"\
+    recall\"\n      },\n      \"properties\": [\n       {\n        \"id\": \"color\",\n        \"value\": {\n         \"mode\"\
+    : \"fixed\",\n         \"fixedColor\": \"#2DD4BF\"\n        }\n       }\n      ]\n     },\n     {\n      \"matcher\":\
+    \ {\n       \"id\": \"byName\",\n       \"options\": \"PR-AUC\"\n      },\n      \"properties\": [\n       {\n       \
+    \ \"id\": \"color\",\n        \"value\": {\n         \"mode\": \"fixed\",\n         \"fixedColor\": \"#A78BFA\"\n    \
+    \    }\n       }\n      ]\n     }\n    ]\n   },\n   \"id\": 9\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\":\
+    \ \"Drift score per feature and of the model score (threshold 0.1)\",\n   \"datasource\": {\n    \"type\": \"prometheus\"\
     ,\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 0,\n    \"y\": 21,\n    \"w\": 12,\n    \"h\": 8\n\
     \   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\
     \n     },\n     \"expr\": \"max by (feature) (fml_feature_drift)\",\n     \"legendFormat\": \"{{feature}}\",\n     \"\
-    refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\",\n     \"placement\"\
-    : \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\": {\n    \"defaults\"\
-    : {\n     \"unit\": \"none\",\n     \"max\": null,\n     \"color\": {\n      \"mode\": \"palette-classic\"\n     },\n\
-    \     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n     }\n   \
-    \ },\n    \"overrides\": []\n   },\n   \"id\": 10\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\": \"Latency p50\
-    \ / p95\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n\
-    \    \"x\": 12,\n    \"y\": 21,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n\
-    \      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"histogram_quantile(0.5, sum\
-    \ by (le) (rate(fml_request_latency_seconds_bucket[1m])))\",\n     \"legendFormat\": \"p50\",\n     \"refId\": \"A\"\n\
-    \    },\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n    \
-    \ \"expr\": \"histogram_quantile(0.95, sum by (le) (rate(fml_request_latency_seconds_bucket[1m])))\",\n     \"legendFormat\"\
-    : \"p95\",\n     \"refId\": \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\"\
-    ,\n     \"placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\"\
-    : {\n    \"defaults\": {\n     \"unit\": \"s\",\n     \"max\": null,\n     \"color\": {\n      \"mode\": \"palette-classic\"\
-    \n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n \
-    \    }\n    },\n    \"overrides\": []\n   },\n   \"id\": 11\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\": \"\
-    Scorer pods by template (canary vs stable)\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\
-    \n   },\n   \"gridPos\": {\n    \"x\": 0,\n    \"y\": 29,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n  \
-    \  {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\":\
-    \ \"count by (rollouts_pod_template_hash) (fml_model_info)\",\n     \"legendFormat\": \"{{rollouts_pod_template_hash}}\"\
-    ,\n     \"refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\",\n     \"\
-    placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\": {\n \
-    \   \"defaults\": {\n     \"unit\": \"none\",\n     \"max\": null,\n     \"color\": {\n      \"mode\": \"palette-classic\"\
-    \n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n \
-    \    }\n    },\n    \"overrides\": []\n   },\n   \"id\": 12\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\": \"\
-    Simulated day\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\"\
-    : {\n    \"x\": 12,\n    \"y\": 29,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\"\
-    : {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_sim_day)\",\n \
-    \    \"legendFormat\": \"served\",\n     \"refId\": \"A\"\n    },\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
-    ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_monitor_day)\",\n     \"legendFormat\": \"monitored\"\
-    ,\n     \"refId\": \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\",\n     \"\
-    placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\": {\n \
-    \   \"defaults\": {\n     \"unit\": \"none\",\n     \"max\": null,\n     \"color\": {\n      \"mode\": \"palette-classic\"\
-    \n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n \
-    \    }\n    },\n    \"overrides\": []\n   },\n   \"id\": 13\n  }\n ]\n}"
+    refId\": \"A\"\n    },\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n\
+    \     },\n     \"expr\": \"max(fml_prediction_drift)\",\n     \"legendFormat\": \"model score\",\n     \"refId\": \"B\"\
+    \n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"displayMode\": \"list\",\n     \"placement\": \"bottom\"\n\
+    \    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n    \
+    \ \"unit\": \"none\",\n     \"max\": null,\n     \"color\": {\n      \"mode\": \"palette-classic\"\n     },\n     \"custom\"\
+    : {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n      \"showPoints\": \"never\"\n     }\n    },\n    \"overrides\"\
+    : []\n   },\n   \"id\": 10\n  },\n  {\n   \"type\": \"timeseries\",\n   \"title\": \"Latency p50 / p95\",\n   \"datasource\"\
+    : {\n    \"type\": \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 12,\n    \"y\":\
+    \ 21,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
+    ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"histogram_quantile(0.5, sum by (le) (rate(fml_request_latency_seconds_bucket[1m])))\"\
+    ,\n     \"legendFormat\": \"p50\",\n     \"refId\": \"A\"\n    },\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\"\
+    ,\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"histogram_quantile(0.95, sum by (le) (rate(fml_request_latency_seconds_bucket[1m])))\"\
+    ,\n     \"legendFormat\": \"p95\",\n     \"refId\": \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n     \"\
+    displayMode\": \"list\",\n     \"placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n    }\n\
+    \   },\n   \"fieldConfig\": {\n    \"defaults\": {\n     \"unit\": \"s\",\n     \"max\": null,\n     \"color\": {\n  \
+    \    \"mode\": \"palette-classic\"\n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\": 8,\n\
+    \      \"showPoints\": \"never\"\n     }\n    },\n    \"overrides\": []\n   },\n   \"id\": 11\n  },\n  {\n   \"type\"\
+    : \"timeseries\",\n   \"title\": \"Scorer pods by template (canary vs stable)\",\n   \"datasource\": {\n    \"type\":\
+    \ \"prometheus\",\n    \"uid\": \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 0,\n    \"y\": 29,\n    \"w\": 12,\n\
+    \    \"h\": 8\n   },\n   \"targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\"\
+    : \"prometheus\"\n     },\n     \"expr\": \"count by (rollouts_pod_template_hash) (fml_model_info)\",\n     \"legendFormat\"\
+    : \"{{rollouts_pod_template_hash}}\",\n     \"refId\": \"A\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n   \
+    \  \"displayMode\": \"list\",\n     \"placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\n\
+    \    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n     \"unit\": \"none\",\n     \"max\": null,\n     \"color\"\
+    : {\n      \"mode\": \"palette-classic\"\n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\"\
+    : 8,\n      \"showPoints\": \"never\"\n     }\n    },\n    \"overrides\": []\n   },\n   \"id\": 12\n  },\n  {\n   \"type\"\
+    : \"timeseries\",\n   \"title\": \"Simulated day\",\n   \"datasource\": {\n    \"type\": \"prometheus\",\n    \"uid\"\
+    : \"prometheus\"\n   },\n   \"gridPos\": {\n    \"x\": 12,\n    \"y\": 29,\n    \"w\": 12,\n    \"h\": 8\n   },\n   \"\
+    targets\": [\n    {\n     \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n\
+    \     \"expr\": \"max(fml_sim_day)\",\n     \"legendFormat\": \"served\",\n     \"refId\": \"A\"\n    },\n    {\n    \
+    \ \"datasource\": {\n      \"type\": \"prometheus\",\n      \"uid\": \"prometheus\"\n     },\n     \"expr\": \"max(fml_monitor_day)\"\
+    ,\n     \"legendFormat\": \"monitored\",\n     \"refId\": \"B\"\n    }\n   ],\n   \"options\": {\n    \"legend\": {\n\
+    \     \"displayMode\": \"list\",\n     \"placement\": \"bottom\"\n    },\n    \"tooltip\": {\n     \"mode\": \"multi\"\
+    \n    }\n   },\n   \"fieldConfig\": {\n    \"defaults\": {\n     \"unit\": \"none\",\n     \"max\": null,\n     \"color\"\
+    : {\n      \"mode\": \"palette-classic\"\n     },\n     \"custom\": {\n      \"lineWidth\": 2,\n      \"fillOpacity\"\
+    : 8,\n      \"showPoints\": \"never\"\n     }\n    },\n    \"overrides\": []\n   },\n   \"id\": 13\n  }\n ]\n}"

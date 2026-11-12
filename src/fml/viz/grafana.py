@@ -19,7 +19,7 @@ def _target(expr: str, legend: str = "", ref: str = "A") -> dict:
     return {"datasource": DS, "expr": expr, "legendFormat": legend, "refId": ref}
 
 
-def stat(title, expr, x, unit="none", decimals=None, thresholds=None, mappings=None, w=4.8):
+def stat(title, expr, x, unit="none", decimals=None, thresholds=None, mappings=None, w=5):
     return {
         "type": "stat",
         "title": title,
@@ -85,14 +85,14 @@ def dashboard() -> dict:
         stat(
             "p95 latency",
             "histogram_quantile(0.95, sum by (le) (rate(fml_request_latency_seconds_bucket[1m])))",
-            4.8,
+            5,
             "s",
             3,
         ),
         stat(
             "Flag rate",
             "sum(rate(fml_flagged_total[5m])) / sum(rate(fml_predictions_total[5m]))",
-            9.6,
+            10,
             "percentunit",
             2,
             [
@@ -101,15 +101,16 @@ def dashboard() -> dict:
                 {"color": ALERT, "value": 0.03},
             ],
         ),
-        stat("Champion version", "max(fml_champion_version)", 14.4, "none", 0),
+        stat("Champion version", "max(fml_champion_version)", 15, "none", 0),
         stat(
             "Drift status",
             "max(fml_drift_alarm)",
-            19.2,
+            20,
             "none",
             0,
             drift_steps,
             [{"type": "value", "options": {"0": {"text": "OK"}, "1": {"text": "DRIFT"}}}],
+            w=4,
         ),
         series(
             "Requests / sec by model version",
@@ -132,15 +133,13 @@ def dashboard() -> dict:
             unit="percentunit",
         ),
         series(
-            "Data drift: share of drifted features (alarm at 25%)",
-            [
-                ("max(fml_drift_share)", "drift share"),
-                ("max(fml_prediction_drift)", "prediction drift"),
-            ],
+            "Share of features drifting (alarm: any feature, 3 days in a row)",
+            [("max(fml_drift_share)", "drifted features")],
             0,
             13,
             unit="percentunit",
-            colors={"drift share": WARN, "prediction drift": CHALLENGER},
+            colors={"drifted features": WARN},
+            max_=1,
         ),
         series(
             "Recall at the alert budget, settled labels only",
@@ -152,8 +151,11 @@ def dashboard() -> dict:
             max_=1,
         ),
         series(
-            "Drift score per feature",
-            [("max by (feature) (fml_feature_drift)", "{{feature}}")],
+            "Drift score per feature and of the model score (threshold 0.1)",
+            [
+                ("max by (feature) (fml_feature_drift)", "{{feature}}"),
+                ("max(fml_prediction_drift)", "model score"),
+            ],
             0,
             21,
             w=12,
