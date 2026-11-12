@@ -60,6 +60,60 @@ def forward() -> None:
     platform.start_port_forwards()
 
 
+@app.command()
+def images(only: list[str] = typer.Argument(None, help="Image name prefixes, e.g. fml-runtime")):
+    """Rebuild the project images and load them into kind."""
+    from fml import platform
+
+    platform.build_images(only)
+
+
+@app.command()
+def apply() -> None:
+    """Apply the app manifests in k8s/ (scorer Rollout, monitor, workflow, alerts, dashboard)."""
+    from fml import platform
+
+    platform.kubectl("apply", "-k", "k8s")
+
+
+@app.command()
+def demo(
+    scenario: str = typer.Option("test/new_fraud_pattern", help="Scenario key, e.g. test/control"),
+    seed: int = typer.Option(201),
+    days: int = typer.Option(None, help="Stop after this many simulated days"),
+    policy: str = typer.Option("drift", help="drift or none"),
+) -> None:
+    """Run one scenario end to end on the cluster (replay -> monitor -> retrain -> canary)."""
+    from fml.replay.fullloop import demo as run_demo
+
+    run_demo(scenario, seed, days, policy)
+
+
+@app.command()
+def collect(run: str) -> None:
+    """Copy a full-loop run's timeline, metrics and reports into results/fullloop/."""
+    from fml.replay.fullloop import collect as do_collect
+
+    do_collect(run)
+
+
+@app.command()
+def backtest(
+    set_name: str = typer.Option("test", "--set", help="dev or test"),
+    policy: list[str] = typer.Option(None, help="Limit to these policies"),
+    scenario: list[str] = typer.Option(None, help="Limit to these scenario names"),
+    workers: int = typer.Option(None),
+) -> None:
+    """Fast in-process policy comparison (resumable: finished runs are skipped)."""
+    from fml.backtest.runner import run_set
+    from fml.policy import load_config
+
+    cfg = load_config()
+    if set_name == "test" and not cfg.get("frozen"):
+        raise typer.BadParameter("configs/experiment.yaml must be frozen before the test set")
+    run_set(set_name, cfg, policy or None, scenario or None, workers)
+
+
 @app.command(context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
 def test(ctx: typer.Context) -> None:
     """Run the test suite. Extra arguments go straight to pytest."""

@@ -1,0 +1,58 @@
+# Drift monitor: Evidently drift + delayed-label performance, exported to Prometheus.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fml-monitor
+  labels: { app: fml-monitor, project: fraud-model-lifecycle }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: fml-monitor }
+  template:
+    metadata:
+      labels: { app: fml-monitor, project: fraud-model-lifecycle }
+    spec:
+      serviceAccountName: fml-pipeline
+      containers:
+        - name: monitor
+          image: fml-runtime:0.1.0
+          imagePullPolicy: Never
+          command: ["uvicorn", "fml.monitor.service:app", "--host", "0.0.0.0", "--port", "8080",
+                    "--no-access-log"]
+          env:
+            - { name: MLFLOW_TRACKING_URI, value: "http://mlflow:5000" }
+            - { name: S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+            - { name: MLFLOW_S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+          envFrom:
+            - secretRef: { name: fml-secrets }
+          ports:
+            - { name: http, containerPort: 8080 }
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 384Mi }
+            limits: { memory: 1Gi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fml-monitor
+  labels: { app: fml-monitor, project: fraud-model-lifecycle }
+spec:
+  selector: { app: fml-monitor }
+  ports:
+    - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fml-monitor
+  labels: { project: fraud-model-lifecycle }
+spec:
+  selector:
+    matchLabels: { app: fml-monitor }
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 10s

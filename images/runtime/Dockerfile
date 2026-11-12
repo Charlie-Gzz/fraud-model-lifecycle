@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/* && useradd --create-home --uid 1000 fml
 COPY --from=build /app/.venv /app/.venv
 COPY scenarios /app/scenarios
+COPY configs /app/configs
 ENV PATH=/app/.venv/bin:$PATH FML_ROOT=/app PYTHONUNBUFFERED=1 MLFLOW_DISABLE_AGENT_HINT=1
 WORKDIR /app
 USER 1000

@@ -1,0 +1,46 @@
+# One service account for the pipeline steps, the drift monitor and the traffic replay.
+# It can read/patch the scorer Rollout and submit/read Argo Workflows, nothing more.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fml-pipeline
+  labels: { project: fraud-model-lifecycle }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: fml-pipeline
+  labels: { project: fraud-model-lifecycle }
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["rollouts", "rollouts/status"]
+    verbs: ["get", "list", "watch", "patch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["analysisruns"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflows"]
+    verbs: ["create", "get", "list", "watch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflowtemplates"]
+    verbs: ["get", "list"]
+  # Needed by the Argo Workflows executor inside every step pod.
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflowtaskresults"]
+    verbs: ["create", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fml-pipeline
+  labels: { project: fraud-model-lifecycle }
+subjects:
+  - kind: ServiceAccount
+    name: fml-pipeline
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: fml-pipeline

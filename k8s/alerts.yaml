@@ -1,0 +1,46 @@
+# Alert rules for the model and the scorer. Alertmanager receives them (no external
+# receivers are configured: nothing leaves the laptop).
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fml-alerts
+  labels: { project: fraud-model-lifecycle }
+spec:
+  groups:
+    - name: fraud-model
+      rules:
+        - alert: FraudModelDrift
+          expr: max(fml_drift_alarm) == 1
+          labels: { severity: warning }
+          annotations:
+            summary: The drift monitor raised an alarm (data drift, prediction drift or recall drop).
+        - alert: FraudModelDataDrift
+          expr: max(fml_drift_share) >= 0.25
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $value | humanizePercentage }} of model features show data drift."
+        - alert: FraudModelRecallDrop
+          expr: max(fml_delayed_recall) < 0.6
+          labels: { severity: critical }
+          annotations:
+            summary: "Recall at the alert budget on settled labels fell to {{ $value | humanizePercentage }}."
+    - name: fraud-scorer
+      rules:
+        - alert: ScorerErrors
+          expr: sum(rate(fml_requests_total{status="error"}[2m])) / sum(rate(fml_requests_total[2m])) > 0.02
+          for: 1m
+          labels: { severity: critical }
+          annotations:
+            summary: More than 2% of scoring requests are failing.
+        - alert: ScorerSlow
+          expr: histogram_quantile(0.95, sum by (le) (rate(fml_request_latency_seconds_bucket[2m]))) > 0.5
+          for: 2m
+          labels: { severity: warning }
+          annotations:
+            summary: Scorer p95 latency is above 500 ms.
+        - alert: FlagRateOffBudget
+          expr: sum(rate(fml_flagged_total[5m])) / sum(rate(fml_predictions_total[5m])) > 0.03
+          for: 2m
+          labels: { severity: warning }
+          annotations:
+            summary: The scorer flags more than 3x the 1% alert budget.

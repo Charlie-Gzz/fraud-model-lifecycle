@@ -1,0 +1,134 @@
+# The model service, rolled out by Argo Rollouts as a canary (20% -> 50% -> 100% of pods),
+# with Prometheus analysis running in the background. A failed analysis aborts and
+# scales the canary away automatically.
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: fraud-scorer
+  labels: { app: fraud-scorer, project: fraud-model-lifecycle }
+spec:
+  replicas: 5
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels: { app: fraud-scorer }
+  template:
+    metadata:
+      labels: { app: fraud-scorer, project: fraud-model-lifecycle }
+    spec:
+      containers:
+        - name: scorer
+          image: fml-runtime:0.1.0
+          imagePullPolicy: Never
+          command: ["uvicorn", "fml.serve.app:app", "--host", "0.0.0.0", "--port", "8080",
+                    "--no-access-log"]
+          env:
+            - { name: MODEL_VERSION, value: "none" }
+            - { name: MLFLOW_TRACKING_URI, value: "http://mlflow:5000" }
+            - { name: S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+            - { name: MLFLOW_S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+            - { name: REDIS_URL, value: "redis://redis:6379/0" }
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+          envFrom:
+            - secretRef: { name: fml-secrets }
+          ports:
+            - { name: http, containerPort: 8080 }
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            periodSeconds: 3
+            failureThreshold: 40
+          resources:
+            requests: { cpu: 100m, memory: 192Mi }
+            limits: { memory: 384Mi }
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: { duration: 40s }
+        - setWeight: 50
+        - pause: { duration: 40s }
+        - setWeight: 100
+        - pause: { duration: 20s }
+      analysis:
+        templates:
+          - templateName: canary-health
+        startingStep: 1
+        args:
+          - name: canary-hash
+            valueFrom:
+              podTemplateHashValue: Latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-scorer
+  labels: { app: fraud-scorer, project: fraud-model-lifecycle }
+spec:
+  selector: { app: fraud-scorer }
+  ports:
+    - { name: http, port: 80, targetPort: 8080 }
+---
+# Scrape every scorer pod and keep the Rollouts pod-template hash as a label, so the
+# analysis can tell canary pods from stable ones.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: fraud-scorer
+  labels: { project: fraud-model-lifecycle }
+spec:
+  selector:
+    matchLabels: { app: fraud-scorer }
+  podMetricsEndpoints:
+    - port: http
+      path: /metrics
+      interval: 10s
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_label_rollouts_pod_template_hash]
+          targetLabel: rollouts_pod_template_hash
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: canary-health
+  labels: { project: fraud-model-lifecycle }
+spec:
+  args:
+    - name: canary-hash
+  metrics:
+    # Share of failed scoring requests on canary pods. No traffic yet counts as fine.
+    - name: error-rate
+      initialDelay: 20s
+      interval: 15s
+      failureLimit: 1
+      successCondition: len(result) == 0 || isNaN(result[0]) || result[0] < 0.02
+      provider:
+        prometheus:
+          address: http://kps-kube-prometheus-stack-prometheus.monitoring:9090
+          query: |
+            sum(rate(fml_requests_total{status="error",rollouts_pod_template_hash="{{args.canary-hash}}"}[1m]))
+            /
+            sum(rate(fml_requests_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m]))
+    # p95 latency of canary pods.
+    - name: p95-latency
+      initialDelay: 20s
+      interval: 15s
+      failureLimit: 1
+      successCondition: len(result) == 0 || isNaN(result[0]) || result[0] < 0.5
+      provider:
+        prometheus:
+          address: http://kps-kube-prometheus-stack-prometheus.monitoring:9090
+          query: |
+            histogram_quantile(0.95, sum by (le) (rate(fml_request_latency_seconds_bucket{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m])))
+    # A model that flags far more than the alert budget would swamp the review team.
+    - name: flag-rate
+      initialDelay: 20s
+      interval: 15s
+      failureLimit: 1
+      successCondition: len(result) == 0 || isNaN(result[0]) || result[0] < 0.05
+      provider:
+        prometheus:
+          address: http://kps-kube-prometheus-stack-prometheus.monitoring:9090
+          query: |
+            sum(rate(fml_flagged_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m]))
+            /
+            sum(rate(fml_predictions_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[1m]))

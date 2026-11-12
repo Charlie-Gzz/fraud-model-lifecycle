@@ -1,0 +1,27 @@
+# Policy comparison settings. Tuned on the dev scenarios only.
+# `frozen` is set to true (with a date) before the test scenarios are run; after that,
+# any change must be logged in docs/DECISIONS.md together with the earlier numbers.
+frozen: false
+frozen_on: null
+
+alert_budget: 0.01
+
+seeds:
+  dev: [101, 102, 103, 104, 105]
+  test: [201, 202, 203, 204, 205]
+
+policies:
+  none: {}
+  scheduled:
+    every_days: 7
+  drift:
+    cooldown_days: 7
+    drift_share: 0.25        # share of features Evidently marks as drifted
+    prediction_drift: 0.1    # Wasserstein (normed) distance of the score distribution
+    recall_drop: 0.15        # delayed-label recall below the champion's holdout recall by this much
+
+# How "recovered" is measured (fixed before looking at any policy results).
+recovery:
+  baseline_days: 14   # recall over the 14 days before drift is the baseline
+  rolling_days: 7     # smooth daily recall over a week
+  recovered_at: 0.95  # recovered once rolling recall is back to 95% of baseline

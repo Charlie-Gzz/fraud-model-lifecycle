@@ -1,0 +1,71 @@
+# The retraining pipeline, submitted by the drift monitor (or the replay, for the
+# bootstrap model). Steps pass data through S3; see src/fml/pipeline/steps.py.
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: retrain
+  labels: { project: fraud-model-lifecycle }
+spec:
+  serviceAccountName: fml-pipeline
+  entrypoint: retrain
+  ttlStrategy:
+    secondsAfterCompletion: 86400
+  podMetadata:
+    labels: { project: fraud-model-lifecycle }
+  arguments:
+    parameters:
+      - { name: run }
+      - { name: day }
+      - { name: seed, value: "0" }
+      - { name: reason, value: "manual" }
+  templates:
+    - name: retrain
+      steps:
+        - - { name: gather-labeled-window, template: step, arguments: { parameters: [{ name: step, value: gather }] } }
+        - - { name: spark-features, template: spark-step, arguments: { parameters: [{ name: step, value: features }] } }
+        - - { name: feature-parity, template: step, arguments: { parameters: [{ name: step, value: parity }] } }
+        - - { name: train-challenger, template: step, arguments: { parameters: [{ name: step, value: train }] } }
+        - - { name: promotion-gate, template: step, arguments: { parameters: [{ name: step, value: gate }] } }
+        - - name: canary-rollout
+            template: step
+            arguments: { parameters: [{ name: step, value: rollout }] }
+            when: "{{steps.promotion-gate.outputs.parameters.passed}} == true"
+
+    - name: step
+      inputs:
+        parameters: [{ name: step }]
+      outputs:
+        parameters:
+          - name: passed
+            valueFrom: { path: /tmp/passed, default: "false" }
+      container:
+        image: fml-runtime:0.1.0
+        imagePullPolicy: Never
+        command: [python, -m, fml.pipeline.steps, "{{inputs.parameters.step}}",
+                  --run, "{{workflow.parameters.run}}", --day, "{{workflow.parameters.day}}",
+                  --wf, "{{workflow.name}}", --seed, "{{workflow.parameters.seed}}"]
+        env: &env
+          - { name: MLFLOW_TRACKING_URI, value: "http://mlflow:5000" }
+          - { name: S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+          - { name: MLFLOW_S3_ENDPOINT_URL, value: "http://seaweedfs:8333" }
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom: { secretKeyRef: { name: fml-secrets, key: AWS_ACCESS_KEY_ID } }
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom: { secretKeyRef: { name: fml-secrets, key: AWS_SECRET_ACCESS_KEY } }
+        resources:
+          requests: { cpu: 200m, memory: 384Mi }
+          limits: { memory: 1536Mi }
+
+    - name: spark-step
+      inputs:
+        parameters: [{ name: step }]
+      container:
+        image: fml-spark:0.1.0
+        imagePullPolicy: Never
+        command: [python, -m, fml.pipeline.steps, "{{inputs.parameters.step}}",
+                  --run, "{{workflow.parameters.run}}", --day, "{{workflow.parameters.day}}",
+                  --wf, "{{workflow.name}}"]
+        env: *env
+        resources:
+          requests: { cpu: 500m, memory: 1Gi }
+          limits: { memory: 2Gi }

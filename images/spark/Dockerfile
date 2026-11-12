@@ -1,22 +1,21 @@
 # PySpark in local mode for the batch feature job. Java lives only in this image.
-FROM ghcr.io/astral-sh/uv:0.13.7@sha256:96f40d3904aad8d0bd010539001d36c8e2188b981e1334471a90c4a1d93bb490 AS uv
-
-FROM python:3.12-slim-trixie@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b AS build
-COPY --from=uv /uv /bin/uv
-WORKDIR /app
-ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never
-COPY pyproject.toml uv.lock README.md ./
-RUN uv sync --frozen --no-dev --extra runtime --extra spark --no-install-project
-COPY src ./src
-RUN uv sync --frozen --no-dev --extra runtime --extra spark --no-editable
-
+# Slim on purpose: only what the Spark step imports (versions match uv.lock), plus the
+# fml source on PYTHONPATH without its other dependencies.
 FROM python:3.12-slim-trixie@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+
 LABEL project=fraud-model-lifecycle
-RUN apt-get update && apt-get install -y --no-install-recommends openjdk-21-jre-headless libgomp1 procps \
+ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PYTHONDONTWRITEBYTECODE=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends openjdk-21-jre-headless procps \
     && rm -rf /var/lib/apt/lists/* && useradd --create-home --uid 1000 fml
-COPY --from=build /app/.venv /app/.venv
+RUN pip install pyspark==4.3.0 pandas==2.3.3 pyarrow==26.0.1 numpy==2.5.4 boto3==1.44.2 pyyaml==6.0.3 \
+    && rm -rf /usr/local/lib/python3.12/site-packages/pyspark/examples \
+              /usr/local/lib/python3.12/site-packages/pyspark/data
+
+COPY src /app/src
 COPY scenarios /app/scenarios
-ENV PATH=/app/.venv/bin:$PATH FML_ROOT=/app PYTHONUNBUFFERED=1 MLFLOW_DISABLE_AGENT_HINT=1 \
-    JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 PYSPARK_PYTHON=/app/.venv/bin/python
+COPY configs /app/configs
+ENV PYTHONPATH=/app/src FML_ROOT=/app PYTHONUNBUFFERED=1 \
+    JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 PYSPARK_PYTHON=/usr/local/bin/python
 WORKDIR /app
 USER 1000
