@@ -9,6 +9,7 @@ Usage: python -m fml.pipeline.steps <step> --run RUN --day DAY --wf WORKFLOW [--
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import tempfile
@@ -157,15 +158,13 @@ def train(args) -> None:
         mlflow.log_metrics({f"holdout_{k}": v for k, v in metrics.items()})
         mlflow.log_artifacts(str(model_dir), artifact_path="model")
         client = registry.client()
-        try:
+        with contextlib.suppress(Exception):  # fails if it already exists, which is fine
             client.create_registered_model(
                 registry.MODEL_NAME,
                 description=(
                     "LightGBM fraud model. Aliases: champion (serving), challenger (in canary)."
                 ),
             )
-        except Exception:
-            pass  # already exists
         version = client.create_model_version(
             registry.MODEL_NAME,
             source=f"{run.info.artifact_uri}/model",
