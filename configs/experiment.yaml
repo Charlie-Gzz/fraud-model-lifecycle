@@ -16,7 +16,8 @@ policies:
     every_days: 7
   drift:
     cooldown_days: 7
-    min_drifted_features: 1  # features over Evidently's own drift threshold (0.1)
+    min_drifted_features: 1  # features over Evidently's own drift threshold (0.1)...
+    persist_days: 3          # ...on 3 consecutive daily checks
     prediction_drift: 0.1    # Wasserstein (normed) distance of the score distribution
     recall_drop: 0.15        # delayed-label recall below the champion's holdout recall by this much
     followups: 2             # weekly follow-up retrains after an alarm-triggered retrain

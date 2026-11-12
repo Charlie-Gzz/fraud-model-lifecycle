@@ -16,7 +16,7 @@ from fml.features.definitions import FEATURES
 
 warnings.filterwarnings("ignore", module="evidently")
 
-CATEGORICAL_DRIFT = ["category_code", "is_new_device", "is_new_merchant"]
+CATEGORICAL_DRIFT = ["category_code", "is_new_device", "new_merchant_7d"]
 NUMERICAL_DRIFT = [f for f in FEATURES if f not in CATEGORICAL_DRIFT]
 REFERENCE_SAMPLE = 20_000
 CURRENT_SAMPLE = 20_000

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 720" width="1400" height="720" role="img" aria-label="Tideline architecture: replay sends transactions to a canary-deployed scorer; a drift monitor triggers an Argo retraining workflow that trains, gates and rolls out a new model">
+  <defs>
+    <marker id="t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2DD4BF"/></marker>
+    <marker id="v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#A78BFA"/></marker>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#F59E0B"/></marker>
+    <style>
+      .box { fill: #131A26; stroke: #1F2937; stroke-width: 1.5; }
+      .t { fill: #E5E7EB; font: 600 15px Inter, 'Segoe UI', sans-serif; }
+      .s { fill: #9CA3AF; font: 12px Inter, 'Segoe UI', sans-serif; }
+      .l { font: 12px Inter, 'Segoe UI', sans-serif; }
+      .chip { fill: #0B0F17; stroke: #A78BFA; stroke-width: 1.2; }
+      .ct { fill: #E5E7EB; font: 600 13px Inter, 'Segoe UI', sans-serif; }
+      .cs { fill: #9CA3AF; font: 11px Inter, 'Segoe UI', sans-serif; }
+    </style>
+  </defs>
+  <rect width="1400" height="720" fill="#0B0F17"/>
+  <text x="40" y="38" class="t" style="font-size:20px">Tideline architecture</text>
+  <text x="40" y="58" class="s">Everything runs in one local kind cluster, created by Terraform (kind, Helm and Kubernetes providers). UIs only via port-forward on 127.0.0.1.</text>
+
+  <rect x="20" y="72" width="1360" height="630" rx="16" fill="none" stroke="#1F2937" stroke-dasharray="6 6"/>
+  <text x="36" y="694" class="s">kind cluster on Docker Desktop · namespaces fml, monitoring, argo, argo-rollouts</text>
+
+  <!-- Replay -->
+  <rect class="box" x="40" y="140" width="190" height="96" rx="12"/>
+  <text x="56" y="168" class="t">Traffic replay</text>
+  <text x="56" y="188" class="s">seeded scenario generator</text>
+  <text x="56" y="205" class="s">accelerated simulated days</text>
+  <text x="56" y="222" class="s">Kubernetes Job</text>
+
+  <!-- Scorer -->
+  <rect class="box" x="320" y="130" width="250" height="116" rx="12" style="stroke:#2DD4BF"/>
+  <text x="336" y="158" class="t">Fraud scorer</text>
+  <text x="336" y="178" class="s">FastAPI, LightGBM, 5 pods</text>
+  <text x="336" y="195" class="s">Argo Rollouts canary 20/50/100%</text>
+  <text x="336" y="212" class="s">auto rollback on Prometheus analysis</text>
+  <text x="336" y="229" class="s">/metrics for Prometheus</text>
+
+  <rect class="box" x="320" y="300" width="250" height="64" rx="12"/>
+  <text x="336" y="326" class="t">Redis</text>
+  <text x="336" y="346" class="s">online features: last 7 days per user</text>
+
+  <!-- S3 -->
+  <rect class="box" x="640" y="130" width="250" height="116" rx="12"/>
+  <text x="656" y="158" class="t">S3 object store</text>
+  <text x="656" y="178" class="s">SeaweedFS</text>
+  <text x="656" y="195" class="s">prediction log, delayed labels,</text>
+  <text x="656" y="212" class="s">Spark features, Evidently reports,</text>
+  <text x="656" y="229" class="s">model artifacts, timeline events</text>
+
+  <!-- Prometheus / Grafana -->
+  <rect class="box" x="640" y="300" width="250" height="64" rx="12"/>
+  <text x="656" y="326" class="t">Prometheus + Alertmanager</text>
+  <text x="656" y="346" class="s">metrics, alerts, canary analysis</text>
+  <rect class="box" x="640" y="400" width="250" height="56" rx="12"/>
+  <text x="656" y="424" class="t">Grafana</text>
+  <text x="656" y="443" class="s">dashboard: traffic, flag rate, drift</text>
+
+  <!-- Monitor -->
+  <rect class="box" x="960" y="130" width="230" height="116" rx="12" style="stroke:#F59E0B"/>
+  <text x="976" y="158" class="t">Drift monitor</text>
+  <text x="976" y="178" class="s">Evidently data + prediction drift</text>
+  <text x="976" y="195" class="s">recall on settled labels only</text>
+  <text x="976" y="212" class="s">retraining policy decides</text>
+  <text x="976" y="229" class="s">HTML report per day</text>
+
+  <!-- MLflow -->
+  <rect class="box" x="1220" y="300" width="140" height="110" rx="12" style="stroke:#A78BFA"/>
+  <text x="1236" y="328" class="t">MLflow</text>
+  <text x="1236" y="348" class="s">model registry</text>
+  <text x="1236" y="365" class="s">aliases: champion,</text>
+  <text x="1236" y="382" class="s">challenger</text>
+  <text x="1236" y="399" class="s">Postgres backend</text>
+
+  <!-- Pipeline -->
+  <rect class="box" x="320" y="520" width="1040" height="150" rx="14" style="stroke:#A78BFA"/>
+  <text x="336" y="548" class="t">Argo Workflows: retraining pipeline</text>
+  <text x="336" y="566" class="s">submitted by the monitor; every step writes its result and a timeline event</text>
+  <g>
+    <rect class="chip" x="336" y="590" width="150" height="58" rx="10"/><text x="350" y="614" class="ct">1 Gather</text><text x="350" y="633" class="cs">labeled window</text>
+    <rect class="chip" x="506" y="590" width="150" height="58" rx="10"/><text x="520" y="614" class="ct">2 Spark features</text><text x="520" y="633" class="cs">PySpark, local mode</text>
+    <rect class="chip" x="676" y="590" width="150" height="58" rx="10"/><text x="690" y="614" class="ct">3 Parity check</text><text x="690" y="633" class="cs">Spark vs online</text>
+    <rect class="chip" x="846" y="590" width="150" height="58" rx="10"/><text x="860" y="614" class="ct">4 Train</text><text x="860" y="633" class="cs">LightGBM challenger</text>
+    <rect class="chip" x="1016" y="590" width="150" height="58" rx="10"/><text x="1030" y="614" class="ct">5 Promotion gate</text><text x="1030" y="633" class="cs">vs champion, holdout</text>
+    <rect class="chip" x="1186" y="590" width="158" height="58" rx="10"/><text x="1200" y="614" class="ct">6 Canary rollout</text><text x="1200" y="633" class="cs">promote or roll back</text>
+    <g stroke="#A78BFA" stroke-width="1.5" marker-end="url(#v)">
+      <line x1="486" y1="619" x2="504" y2="619"/><line x1="656" y1="619" x2="674" y2="619"/>
+      <line x1="826" y1="619" x2="844" y2="619"/><line x1="996" y1="619" x2="1014" y2="619"/>
+      <line x1="1166" y1="619" x2="1184" y2="619"/>
+    </g>
+  </g>
+
+  <!-- Arrows: serving path (teal) -->
+  <g fill="none" stroke="#2DD4BF" stroke-width="2" marker-end="url(#t)">
+    <path d="M230,188 L316,188"/>
+    <path d="M445,246 L445,296"/>
+    <path d="M570,188 L636,188"/>
+  </g>
+  <text x="236" y="178" class="l" fill="#2DD4BF">transactions</text>
+  <text x="452" y="276" class="l" fill="#2DD4BF">read / update</text>
+  <text x="576" y="178" class="l" fill="#2DD4BF">log</text>
+
+  <!-- delayed labels -->
+  <path d="M145,140 L145,100 L700,100 L700,126" fill="none" stroke="#2DD4BF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#t)"/>
+  <text x="160" y="94" class="l" fill="#2DD4BF">fraud reports arrive days later (delayed labels)</text>
+
+  <!-- Monitoring path (amber) -->
+  <g fill="none" stroke="#F59E0B" stroke-width="2" marker-end="url(#a)">
+    <path d="M890,188 L956,188"/>
+    <path d="M1075,246 L1075,332 L894,332"/>
+    <path d="M570,236 L636,318"/>
+    <path d="M765,364 L765,396"/>
+  </g>
+  <text x="896" y="178" class="l" fill="#F59E0B">last 7 days</text>
+  <text x="1068" y="290" class="l" fill="#F59E0B" text-anchor="end">drift metrics</text>
+  <text x="612" y="270" class="l" fill="#F59E0B">metrics</text>
+
+  <!-- Retrain path (violet) -->
+  <g fill="none" stroke="#A78BFA" stroke-width="2" marker-end="url(#v)">
+    <path d="M1140,246 L1140,516"/>
+    <path d="M1290,590 L1290,414"/>
+    <path d="M1240,590 L1240,500 L290,500 L290,215 L316,215"/>
+    <path d="M1300,300 L1300,116 L480,116 L480,126"/>
+  </g>
+  <text x="1148" y="440" class="l" fill="#A78BFA">alarm: submit</text>
+  <text x="1148" y="456" class="l" fill="#A78BFA">retrain workflow</text>
+  <text x="1298" y="470" class="l" fill="#A78BFA">register,</text>
+  <text x="1298" y="486" class="l" fill="#A78BFA">set alias</text>
+  <text x="282" y="440" class="l" fill="#A78BFA" transform="rotate(-90 282 440)">canary: set MODEL_VERSION</text>
+  <text x="1200" y="110" class="l" fill="#A78BFA">load model version</text>
+</svg>

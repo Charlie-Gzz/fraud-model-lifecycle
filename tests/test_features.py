@@ -38,7 +38,7 @@ def test_hand_checked_values():
     assert f.loc[0, "txn_count_24h"] == 0 and f.loc[1, "txn_count_24h"] == 0
     assert f.loc[0, "is_new_device"] == 1 and f.loc[1, "is_new_device"] == 1
     assert f.loc[2, "txn_count_1h"] == 2 and f.loc[2, "amount_sum_24h"] == 50.0
-    assert f.loc[2, "is_new_device"] == 1 and f.loc[2, "is_new_merchant"] == 0
+    assert f.loc[2, "is_new_device"] == 1 and f.loc[2, "new_merchant_7d"] == 0
     assert f.loc[3, "txn_count_1h"] == 0 and f.loc[3, "distinct_merchants_24h"] == 2
     assert f.loc[3, "seconds_since_last"] == 4000
     assert f.loc[4, "txn_count_24h"] == 1  # only txn 3 is within 24h of 90000

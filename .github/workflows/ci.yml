@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - run: uv run fml lint
+      - run: uv run fml test -q
+      - name: Numbers regenerate from saved runs
+        run: uv run fml results --set test
+
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.17.1
+      - name: terraform fmt + validate
+        run: |
+          terraform fmt -check -recursive infra
+          for stage in cluster platform; do
+            terraform -chdir=infra/$stage init -backend=false -input=false
+            terraform -chdir=infra/$stage validate
+          done
+      - uses: azure/setup-helm@v5
+        with:
+          version: v4.3.1
+      - run: helm lint infra/charts/fml-platform
+      - name: kubeconform (built-in kinds; CRDs skipped)
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz | tar xz
+          kubectl kustomize k8s > rendered.yaml
+          ./kubeconform -strict -summary -ignore-missing-schemas rendered.yaml

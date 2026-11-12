@@ -141,6 +141,24 @@ def backtest(
     run_set(set_name, cfg, policy or None, scenario or None, workers)
 
 
+@app.command()
+def results(set_name: str = typer.Option("test", "--set")) -> None:
+    """Recompute every reported number from saved runs (no cluster needed)."""
+    from fml import results as res
+
+    path = res.write(set_name)
+    typer.echo((path.parent / f"summary_{set_name}.md").read_text())
+
+
+@app.command()
+def assets(set_name: str = typer.Option("test", "--set")) -> None:
+    """Regenerate charts, headline, site data and the interactive page from saved results."""
+    from fml import assets as build_assets
+
+    for line in build_assets.build(set_name):
+        typer.echo(f"wrote {line}")
+
+
 @app.command(context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
 def test(ctx: typer.Context) -> None:
     """Run the test suite. Extra arguments go straight to pytest."""

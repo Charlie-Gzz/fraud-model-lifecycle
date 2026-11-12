@@ -9,6 +9,7 @@ from fml.train import model as M
 PARAMS = {
     "cooldown_days": 7,
     "min_drifted_features": 1,
+    "persist_days": 1,
     "prediction_drift": 0.1,
     "recall_drop": 0.15,
     "every_days": 7,
@@ -130,3 +131,14 @@ def test_time_to_recover_needs_a_sustained_recovery():
     rec = {"rolling_days": 1, "recovered_at": 0.95, "sustain_days": 2}
     days = _days([0.8, 0.8, 0.5, 0.8, 0.5, 0.8, 0.8])
     assert time_to_recover(days, 2, 0.8, rec) == 3  # the lone good day 3 does not count
+
+
+def test_data_drift_must_persist_before_it_alarms():
+    params = {**PARAMS, "persist_days": 3}
+    state = st(27)
+    loud = {"drifted_features": ["amount"]}
+    assert not decide("drift", params, 60, state, loud, 0.8).retrain
+    assert not decide("drift", params, 61, state, {}, 0.8).retrain  # streak broken
+    assert not decide("drift", params, 62, state, loud, 0.8).retrain
+    assert not decide("drift", params, 63, state, loud, 0.8).retrain
+    assert decide("drift", params, 64, state, loud, 0.8).retrain

@@ -35,7 +35,7 @@ FEATURES = [
     "hour",
     "category_code",
     "is_new_device",  # device never used by this user before
-    "is_new_merchant",  # merchant never used by this user before
+    "new_merchant_7d",  # merchant not used by this user in the last 7 days
     "txn_count_1h",
     "txn_count_24h",
     "amount_sum_24h",

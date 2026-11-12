@@ -46,7 +46,16 @@ def compute(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     first_dev = s.groupby(["user_id", "device_id"])["ts"].transform("min").to_numpy()
-    first_mer = s.groupby(["user_id", "merchant_id"])["ts"].transform("min").to_numpy()
+
+    # Same merchant for the same user within [t - 7d, t): sort by (user, merchant, ts).
+    um = s["user_id"].to_numpy(np.int64) * 100_000 + mer
+    order2 = np.lexsort((ts, um))
+    key2 = um[order2] * BIG + ts[order2]
+    seen = np.searchsorted(key2, key2, side="left") - np.searchsorted(
+        key2, key2 - WEEK, side="left"
+    )
+    new_mer = np.empty(len(s), dtype=np.int64)
+    new_mer[order2] = (seen == 0).astype(np.int64)
 
     out = pd.DataFrame(
         {
@@ -54,7 +63,7 @@ def compute(df: pd.DataFrame) -> pd.DataFrame:
             "hour": (ts % DAY) // HOUR,
             "category_code": s["category"].to_numpy(np.int64),
             "is_new_device": (ts == first_dev).astype(np.int64),
-            "is_new_merchant": (ts == first_mer).astype(np.int64),
+            "new_merchant_7d": new_mer,
             "txn_count_1h": right - left_1h,
             "txn_count_24h": right - left_24h,
             "amount_sum_24h": csum[right] - csum[left_24h],

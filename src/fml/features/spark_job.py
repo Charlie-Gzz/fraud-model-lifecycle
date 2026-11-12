@@ -23,7 +23,7 @@ def build(df: DataFrame) -> DataFrame:
     w24h = by_user.rangeBetween(-DAY, -1)
     w7d = by_user.rangeBetween(-WEEK, -1)
     first_dev = F.min("ts").over(Window.partitionBy("user_id", "device_id"))
-    first_mer = F.min("ts").over(Window.partitionBy("user_id", "merchant_id"))
+    same_mer_7d = Window.partitionBy("user_id", "merchant_id").orderBy("ts").rangeBetween(-WEEK, -1)
     nan = F.lit(float("nan"))
 
     count_7d = F.count("ts").over(w7d)
@@ -36,7 +36,7 @@ def build(df: DataFrame) -> DataFrame:
         F.floor((F.col("ts") % DAY) / HOUR).cast("long").alias("hour"),
         F.col("category").cast("long").alias("category_code"),
         (F.col("ts") == first_dev).cast("long").alias("is_new_device"),
-        (F.col("ts") == first_mer).cast("long").alias("is_new_merchant"),
+        (F.count("ts").over(same_mer_7d) == 0).cast("long").alias("new_merchant_7d"),
         F.count("ts").over(w1h).cast("long").alias("txn_count_1h"),
         F.count("ts").over(w24h).cast("long").alias("txn_count_24h"),
         F.coalesce(F.sum("amount").over(w24h), F.lit(0.0)).alias("amount_sum_24h"),

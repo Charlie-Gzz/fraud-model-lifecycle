@@ -28,6 +28,7 @@ def load_config() -> dict:
 class PolicyState:
     last_attempt_day: int
     followups_left: int = 0
+    drift_streak: int = 0  # consecutive daily checks with at least one drifted feature
 
 
 @dataclass(frozen=True)
@@ -38,10 +39,13 @@ class Decision:
     followup: bool = False
 
 
-def alarms(monitor: dict, params: dict, champion_recall: float | None) -> tuple[str, ...]:
-    """Which monitor signals are over their thresholds."""
+def alarms(
+    monitor: dict, params: dict, champion_recall: float | None, drift_streak: int = 0
+) -> tuple[str, ...]:
+    """Which monitor signals are over their thresholds. Data drift must persist for
+    `persist_days` consecutive checks, so one noisy day does not trigger a retrain."""
     found = []
-    if len(monitor.get("drifted_features", [])) >= params["min_drifted_features"]:
+    if drift_streak >= params.get("persist_days", 1):
         found.append("data_drift")
     if monitor.get("prediction_drift", 0.0) >= params["prediction_drift"]:
         found.append("prediction_drift")
@@ -73,7 +77,9 @@ def decide(
     if policy != "drift":
         raise ValueError(f"unknown policy {policy!r}")
 
-    found = alarms(monitor, params, champion_recall)
+    drifted = len(monitor.get("drifted_features", [])) >= params["min_drifted_features"]
+    state.drift_streak = state.drift_streak + 1 if drifted else 0
+    found = alarms(monitor, params, champion_recall, state.drift_streak)
     if found and since >= params["cooldown_days"]:
         return Decision(True, "alarm: " + ", ".join(found), found)
     if state.followups_left > 0 and since >= params["followup_every_days"]:
@@ -86,6 +92,7 @@ def decide(
 def after_retrain(state: PolicyState, decision: Decision, day: int, params: dict) -> None:
     """Update the policy state once a retrain has been started."""
     state.last_attempt_day = day
+    state.drift_streak = 0  # the new model gets a fresh reference
     if decision.followup:
         state.followups_left -= 1
     elif decision.alarms:
