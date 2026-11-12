@@ -1,0 +1,41 @@
+# Pinned CLI tools, downloaded by `fml tools` into .tools/ (gitignored).
+# Each binary is checked against the SHA-256 below before it is used.
+# Versions were chosen on 2026-11-12 from official release pages.
+
+[kind]
+version = "v0.33.0"
+url = "https://github.com/kubernetes-sigs/kind/releases/download/v0.33.0/kind-windows-amd64"
+sha256 = "4b22adaa135368c5a465d56bbd8e520cbea87272a06ca00b6078e7b81515c9fc"
+exe = "kind.exe"
+
+[kubectl]
+version = "v1.37.2"
+url = "https://dl.k8s.io/release/v1.37.2/bin/windows/amd64/kubectl.exe"
+sha256 = "1691938f7de0e931969f9968c3601cf32d6b0d573573afb4ce471f3d28f51984"
+exe = "kubectl.exe"
+
+[helm]
+version = "v4.3.1"
+url = "https://get.helm.sh/helm-v4.3.1-windows-amd64.zip"
+sha256 = "fcfd7b796dcf0f225abc40b5636a3b01f55f3de2fb1dfb18475df94e62c14112"
+exe = "helm.exe"
+archive_member = "windows-amd64/helm.exe"
+
+[terraform]
+version = "1.17.1"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_windows_amd64.zip"
+sha256 = "a3b71365cff94c0f978cf75d86addb075ea1bb6409055ea0ab359bf057d7898a"
+exe = "terraform.exe"
+archive_member = "terraform.exe"
+
+[argo]
+version = "v4.1.6"
+url = "https://github.com/argoproj/argo-workflows/releases/download/v4.1.6/argo-windows-amd64.exe.gz"
+sha256 = "7992cd5efe89622f9b466232019863d3b5be8b939866aeadb52c8dbdefa21bdf"
+exe = "argo.exe"
+
+[kubectl-argo-rollouts]
+version = "v1.10.2"
+url = "https://github.com/argoproj/argo-rollouts/releases/download/v1.10.2/kubectl-argo-rollouts-windows-amd64"
+sha256 = "d41f9e4823f32e9270f4b9257d61f2ccb96e4097f2b4f8bc4ff39f01f1d4a90f"
+exe = "kubectl-argo-rollouts.exe"

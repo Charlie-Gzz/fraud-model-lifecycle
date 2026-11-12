@@ -1,0 +1,76 @@
+[project]
+name = "fml"
+version = "0.1.0"
+description = "A fraud model's full lifecycle on a local Kubernetes cluster."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "typer>=0.29,<0.30",
+    "numpy>=2.5,<2.6",
+    "pandas>=2.3,<3",
+    "pyarrow>=26,<27",
+    "lightgbm>=4.7,<4.8",
+    "scikit-learn>=1.9,<1.10",
+    "evidently>=0.7.23,<0.8",
+    "pyyaml>=6.0",
+    "httpx>=0.28,<0.29",
+]
+
+[project.optional-dependencies]
+# Cluster-side runtime (model service, monitor, trainer, replay).
+runtime = [
+    "mlflow-skinny>=3.18,<3.19",
+    "boto3>=1.44,<1.45",
+    "fastapi>=0.162,<0.163",
+    "uvicorn>=0.54,<0.55",
+    "redis>=8.1,<8.2",
+    "prometheus-client>=0.26,<0.27",
+    "kubernetes>=37,<38",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17,<0.18",
+    "pytest>=9.2,<9.3",
+    "matplotlib>=3.11,<3.12",
+    "plotly>=5.24,<6",
+    "playwright>=1.65,<1.66",
+    "fakeredis>=2.32",
+    "fml[runtime]",
+]
+
+[project.scripts]
+fml = "fml.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fml"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.sources]
+fml = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "cluster: needs the running kind cluster (skipped by default)",
+    "slow: slower end-to-end tests",
+]
+addopts = "-m 'not cluster'"
