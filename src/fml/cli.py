@@ -9,6 +9,11 @@ import typer
 
 from fml import REPO_ROOT
 
+# Windows consoles default to cp1252; some libraries (MLflow) print emoji.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 app = typer.Typer(
     help="Fraud model lifecycle: platform, experiments, and assets.", no_args_is_help=True
 )
@@ -95,6 +100,28 @@ def collect(run: str) -> None:
     from fml.replay.fullloop import collect as do_collect
 
     do_collect(run)
+
+
+@app.command("break-model")
+def break_model() -> None:
+    """Canary a deliberately broken model under load and check that it rolls back by itself."""
+    import json
+
+    from fml.replay.checks import broken_model
+
+    result = broken_model()
+    typer.echo(json.dumps(result, indent=2))
+    raise typer.Exit(0 if result["rolled_back"] else 1)
+
+
+@app.command()
+def loadtest(seconds: int = 60, workers: int = 16) -> None:
+    """Measure scorer p50/p95 latency and throughput from inside the cluster."""
+    import json
+
+    from fml.replay.checks import loadtest as run_loadtest
+
+    typer.echo(json.dumps(run_loadtest(seconds, workers), indent=2))
 
 
 @app.command()

@@ -22,12 +22,16 @@ ALERT = "#EF4444"
 CHAMPION = "#2DD4BF"
 CHALLENGER = "#A78BFA"
 
-# Policies: colour plus line style, so colour is never the only signal.
+# Policies: colour plus line style, so colour is never the only signal. These three
+# pass the dataviz palette validator on the dark panel (lightness band, chroma, CVD and
+# normal-vision separation, contrast). The lighter accent teal fails the lightness band
+# for chart series, so it stays a UI colour.
 POLICY_STYLE = {
-    "none": {"color": "#9CA3AF", "linestyle": ":", "label": "No retraining"},
-    "scheduled": {"color": "#A78BFA", "linestyle": "--", "label": "Weekly retraining"},
-    "drift": {"color": ACCENT, "linestyle": "-", "label": "Drift-triggered retraining"},
+    "none": {"color": "#EC4899", "linestyle": ":", "label": "No retraining"},
+    "scheduled": {"color": "#8B5CF6", "linestyle": "--", "label": "Weekly retraining"},
+    "drift": {"color": "#0D9488", "linestyle": "-", "label": "Drift-triggered retraining"},
 }
+POLICY_ORDER = ["drift", "scheduled", "none"]
 
 
 def _font(preferred: str, fallback: str = "DejaVu Sans") -> str:

@@ -1,0 +1,59 @@
+:root {
+  --bg: #0B0F17;
+  --panel: #131A26;
+  --line: #1F2937;
+  --text: #E5E7EB;
+  --muted: #9CA3AF;
+  --accent: #2DD4BF;
+  --healthy: #22C55E;
+  --warn: #F59E0B;
+  --alert: #EF4444;
+  --champion: #2DD4BF;
+  --challenger: #A78BFA;
+}
+
+html { color-scheme: dark; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+}
+.mono, .num { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.text-muted { color: var(--muted); }
+.border-line { border-color: var(--line); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+
+.nav-link { padding: 6px 12px; border-radius: 8px; color: var(--muted); }
+.nav-link:hover { color: var(--text); background: var(--panel); }
+.nav-link.active { color: var(--text); background: var(--panel); border: 1px solid var(--line); }
+
+.tab {
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+  color: var(--muted); background: transparent; font-size: 14px; cursor: pointer;
+}
+.tab:hover { color: var(--text); }
+.tab[aria-selected="true"] { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 600; }
+.tab:focus-visible, .marker:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.tile { padding: 14px 16px; }
+.tile .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.tile .value { font-family: "JetBrains Mono", monospace; font-size: 26px; font-weight: 600; margin-top: 4px; }
+.tile .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.swatch { display: inline-block; width: 22px; height: 0; border-top-width: 3px; vertical-align: middle; margin-right: 6px; }
+
+.tooltip {
+  position: fixed; z-index: 50; pointer-events: none; max-width: 280px;
+  background: #0F1520; border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; font-size: 12px; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.tooltip b { color: var(--text); }
+
+.marker { cursor: pointer; }
+.marker:hover .ring, .marker.selected .ring { stroke: var(--text); stroke-width: 2; }
+
+.metric-table td, .metric-table th { padding: 4px 8px 4px 0; }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); }
+a.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+table tbody tr { border-top: 1px solid var(--line); }
+table td { padding: 6px 16px 6px 0; vertical-align: top; }

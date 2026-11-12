@@ -1,0 +1,17 @@
+{
+ "retrain-d035-jw72k": {
+  "passed": true,
+  "reason": "no champion yet (bootstrap)",
+  "version": "1",
+  "champion_version": null,
+  "champion": null,
+  "challenger": {
+   "n": 22527,
+   "n_fraud": 96,
+   "recall_at_budget": 0.84375,
+   "dollars_caught": 0.9114481035858082,
+   "pr_auc": 0.7748804715207869,
+   "flag_rate": 0.01012118790784392
+  }
+ }
+}

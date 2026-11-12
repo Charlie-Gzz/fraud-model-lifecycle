@@ -15,7 +15,7 @@ LABEL_MATURITY_DAYS = 3
 HOLDOUT_DAYS = 5  # most recent settled days, used by the promotion gate
 TRAIN_DAYS = 21  # settled days before the holdout, used to train
 WARMUP_DAYS = 7  # the first week has no 7-day feature history, so never train on it
-FIRST_TRAIN_DAY = 27  # the bootstrap model is trained at the end of this day
+FIRST_TRAIN_DAY = 35  # bootstrap model: end of this day, so it gets a full train window
 MONITOR_DAYS = 7  # drift compares the last week of traffic with the model's reference
 
 

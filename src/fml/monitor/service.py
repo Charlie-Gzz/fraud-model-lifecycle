@@ -27,7 +27,7 @@ from fml import events, k8s, lifecycle, storage
 from fml.features.definitions import FEATURES
 from fml.monitor.drift import drift_report
 from fml.pipeline.steps import read_labels, read_predictions
-from fml.policy import decide, load_config
+from fml.policy import PolicyState, after_retrain, decide, load_config
 from fml.serve import registry
 from fml.train import model as M
 
@@ -65,9 +65,14 @@ def _reference(version: str) -> pd.DataFrame:
     return _reference_cache[version]
 
 
-def _state(run: str) -> dict:
+def _state(run: str) -> PolicyState:
     key = f"runs/{run}/monitor/state.json"
-    return storage.get_json(key) if storage.exists(key) else {"last_attempt_day": -1}
+    raw = storage.get_json(key) if storage.exists(key) else {"last_attempt_day": -1}
+    return PolicyState(**raw)
+
+
+def _save_state(run: str, state: PolicyState) -> None:
+    storage.put_json(f"runs/{run}/monitor/state.json", state.__dict__)
 
 
 def check(req: RunRequest) -> dict:
@@ -115,7 +120,7 @@ def check(req: RunRequest) -> dict:
             FEATURE_DRIFT.labels(f).set(v)
 
     state = _state(req.run)
-    dec = decide(req.policy, params, d, state["last_attempt_day"], out, champion_recall)
+    dec = decide(req.policy, params, d, state, out, champion_recall)
     out.update(decision=dec.reason, alarms=list(dec.alarms), retrain=dec.retrain)
     ALARM.set(1 if dec.alarms else 0)
     MONITOR_DAY.set(d)
@@ -135,8 +140,8 @@ def check(req: RunRequest) -> dict:
     if dec.retrain:
         wf = k8s.submit_retrain(req.run, d, req.seed + d, dec.reason)
         out["workflow"] = wf
-        state["last_attempt_day"] = d
-        storage.put_json(f"runs/{req.run}/monitor/state.json", state)
+        after_retrain(state, dec, d, params)
+        _save_state(req.run, state)
         RETRAINS.labels("drift").inc()
         events.emit(req.run, d, "retrain_started", "monitor", dec.reason, workflow=wf)
     storage.put_json(f"runs/{req.run}/monitor/day={d:03d}.json", out)
@@ -151,7 +156,7 @@ def run(req: RunRequest) -> dict:
 @app.post("/attempt")
 def attempt(req: RunRequest) -> dict:
     """Record a retrain started outside the monitor (the bootstrap), for the cooldown."""
-    storage.put_json(f"runs/{req.run}/monitor/state.json", {"last_attempt_day": req.day})
+    _save_state(req.run, PolicyState(last_attempt_day=req.day))
     return {"ok": True}
 
 

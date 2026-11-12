@@ -2,10 +2,10 @@ name: new_category
 set: test
 description: A new crypto_exchange merchant category appears for a quarter of users, with its own cash-out
   fraud.
-n_days: 100
+n_days: 110
 n_users: 3000
 drift:
 - type: new_category
-  start_day: 56
+  start_day: 65
   ramp_days: 10
   strength: 1.0

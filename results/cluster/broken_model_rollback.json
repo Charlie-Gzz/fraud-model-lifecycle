@@ -1,0 +1,9 @@
+{
+  "broken_version": "3",
+  "champion_before": "1",
+  "serving_after": "1",
+  "promoted": false,
+  "rolled_back": true,
+  "seconds_to_resolve": 51.9,
+  "rollout_phase_after": "Healthy"
+}

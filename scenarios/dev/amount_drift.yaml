@@ -2,10 +2,10 @@ name: amount_drift
 set: dev
 description: 'Legit spending creeps up: amounts rise up to 80% and the mix shifts toward electronics and
   travel. Fraud amounts do not change.'
-n_days: 100
+n_days: 110
 n_users: 3000
 drift:
 - type: amount_drift
-  start_day: 45
+  start_day: 55
   ramp_days: 7
   strength: 1.0

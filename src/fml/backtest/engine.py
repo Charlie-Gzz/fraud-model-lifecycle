@@ -24,7 +24,7 @@ from fml.data.scenarios import Scenario
 from fml.features import batch
 from fml.features.definitions import FEATURES
 from fml.monitor.drift import drift_report
-from fml.policy import decide
+from fml.policy import PolicyState, after_retrain, decide
 from fml.train import model as M
 
 MIN_DRIFT_DAYS = 3  # the drift check needs a few days of traffic from the current champion
@@ -121,7 +121,7 @@ def run(
     champion = bootstrap or train_challenger(P, first, seed, version=1)
     versions = 1
     served = np.full(len(P.day), np.nan)
-    last_attempt = first
+    state = PolicyState(last_attempt_day=first)
     days, events = (
         [],
         [
@@ -139,7 +139,7 @@ def run(
         served[today] = M.score(champion.booster, P.F[today])
         truth = M.evaluate(served[today], P.y[today], P.day[today], P.amount[today])
         mon = monitor(P, served, d, champion, with_drift=(policy == "drift"))
-        dec = decide(policy, params, d, last_attempt, mon, champion.holdout["recall_at_budget"])
+        dec = decide(policy, params, d, state, mon, champion.holdout["recall_at_budget"])
         record = {
             "day": d,
             "champion_version": champion.version,
@@ -167,7 +167,7 @@ def run(
                 }
             )
         if dec.retrain:
-            last_attempt = d
+            after_retrain(state, dec, d, params)
             versions += 1
             events.append({"day": d, "type": "retrain_started", "details": dec.reason})
             challenger = train_challenger(P, d, seed, versions)

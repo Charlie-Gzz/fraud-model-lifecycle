@@ -24,7 +24,7 @@ from fml import REPO_ROOT
 from fml.backtest.runner import RESULTS as BACKTEST
 from fml.policy import load_config
 
-SET_DRIFT_START = {"dev": 45, "test": 56}  # control runs are scored over the same window
+SET_DRIFT_START = {"dev": 55, "test": 65}  # control runs are scored over the same window
 
 
 def pooled(days: list[dict], lo: int, hi: int, key: str = "recall") -> float:
@@ -48,16 +48,22 @@ def rolling(days: list[dict], window: int) -> dict[int, float]:
 
 
 def time_to_recover(days: list[dict], start: int, baseline: float, rec: dict) -> int | None:
+    """Days from `start` until rolling recall is back above target and stays there for
+    `sustain_days`, after first dropping below it. 0 if it never dropped, None if it never
+    came back."""
     target = rec["recovered_at"] * baseline
+    sustain = rec.get("sustain_days", 1)
     roll = rolling(days, rec["rolling_days"])
     after = sorted((d, r) for d, r in roll.items() if d >= start)
-    dropped = False
-    for d, r in after:
-        if r < target:
-            dropped = True
-        elif dropped:
+    if not any(r < target for _, r in after):
+        return 0
+    first_drop = next(d for d, r in after if r < target)
+    later = [(d, r) for d, r in after if d > first_drop]
+    for i, (d, _) in enumerate(later):
+        window = later[i : i + sustain]
+        if len(window) == sustain and all(r >= target for _, r in window):
             return d - start
-    return 0 if not dropped else None
+    return None
 
 
 def summarize(run: dict, none_run: dict, cfg: dict) -> dict:

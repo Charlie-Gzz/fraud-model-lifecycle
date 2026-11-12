@@ -1,0 +1,47 @@
+{"day": 0, "real_time": 1794521297.23, "type": "run_started", "source": "replay", "details": "dev/new_fraud_pattern seed 101", "scenario": "dev/new_fraud_pattern", "seed": 101, "policy": "drift", "drift_start": 55}
+{"day": 0, "real_time": 1794521303.825, "type": "day_completed", "source": "replay", "details": "", "n": 4791, "n_fraud": 23, "requests": 50, "canary": false, "seconds": 5.9}
+{"day": 1, "real_time": 1794521309.504, "type": "day_completed", "source": "replay", "details": "", "n": 5051, "n_fraud": 23, "requests": 52, "canary": false, "seconds": 5.7}
+{"day": 2, "real_time": 1794521315.226, "type": "day_completed", "source": "replay", "details": "", "n": 4686, "n_fraud": 24, "requests": 49, "canary": false, "seconds": 5.7}
+{"day": 3, "real_time": 1794521321.056, "type": "day_completed", "source": "replay", "details": "", "n": 4516, "n_fraud": 23, "requests": 48, "canary": false, "seconds": 5.8}
+{"day": 4, "real_time": 1794521328.347, "type": "day_completed", "source": "replay", "details": "", "n": 4835, "n_fraud": 30, "requests": 51, "canary": false, "seconds": 7.3}
+{"day": 5, "real_time": 1794521335.041, "type": "day_completed", "source": "replay", "details": "", "n": 5295, "n_fraud": 11, "requests": 55, "canary": false, "seconds": 6.7}
+{"day": 6, "real_time": 1794521341.951, "type": "day_completed", "source": "replay", "details": "", "n": 5585, "n_fraud": 29, "requests": 58, "canary": false, "seconds": 6.9}
+{"day": 7, "real_time": 1794521348.29, "type": "day_completed", "source": "replay", "details": "", "n": 4643, "n_fraud": 46, "requests": 48, "canary": false, "seconds": 6.3}
+{"day": 8, "real_time": 1794521354.732, "type": "day_completed", "source": "replay", "details": "", "n": 4297, "n_fraud": 7, "requests": 44, "canary": false, "seconds": 6.4}
+{"day": 9, "real_time": 1794521361.27, "type": "day_completed", "source": "replay", "details": "", "n": 4323, "n_fraud": 30, "requests": 45, "canary": false, "seconds": 6.5}
+{"day": 10, "real_time": 1794521367.91, "type": "day_completed", "source": "replay", "details": "", "n": 4737, "n_fraud": 4, "requests": 50, "canary": false, "seconds": 6.6}
+{"day": 11, "real_time": 1794521374.618, "type": "day_completed", "source": "replay", "details": "", "n": 4766, "n_fraud": 16, "requests": 50, "canary": false, "seconds": 6.7}
+{"day": 12, "real_time": 1794521381.437, "type": "day_completed", "source": "replay", "details": "", "n": 5489, "n_fraud": 24, "requests": 57, "canary": false, "seconds": 6.8}
+{"day": 13, "real_time": 1794521387.681, "type": "day_completed", "source": "replay", "details": "", "n": 5095, "n_fraud": 26, "requests": 53, "canary": false, "seconds": 6.2}
+{"day": 14, "real_time": 1794521393.771, "type": "day_completed", "source": "replay", "details": "", "n": 4396, "n_fraud": 13, "requests": 46, "canary": false, "seconds": 6.1}
+{"day": 15, "real_time": 1794521399.573, "type": "day_completed", "source": "replay", "details": "", "n": 4423, "n_fraud": 7, "requests": 47, "canary": false, "seconds": 5.8}
+{"day": 16, "real_time": 1794521405.938, "type": "day_completed", "source": "replay", "details": "", "n": 4480, "n_fraud": 9, "requests": 46, "canary": false, "seconds": 6.3}
+{"day": 17, "real_time": 1794521411.673, "type": "day_completed", "source": "replay", "details": "", "n": 4485, "n_fraud": 24, "requests": 47, "canary": false, "seconds": 5.7}
+{"day": 18, "real_time": 1794521417.735, "type": "day_completed", "source": "replay", "details": "", "n": 4700, "n_fraud": 36, "requests": 48, "canary": false, "seconds": 6.0}
+{"day": 19, "real_time": 1794521423.562, "type": "day_completed", "source": "replay", "details": "", "n": 5142, "n_fraud": 23, "requests": 52, "canary": false, "seconds": 5.8}
+{"day": 20, "real_time": 1794521429.405, "type": "day_completed", "source": "replay", "details": "", "n": 5165, "n_fraud": 11, "requests": 54, "canary": false, "seconds": 5.8}
+{"day": 21, "real_time": 1794521435.132, "type": "day_completed", "source": "replay", "details": "", "n": 4149, "n_fraud": 27, "requests": 44, "canary": false, "seconds": 5.7}
+{"day": 22, "real_time": 1794521441.009, "type": "day_completed", "source": "replay", "details": "", "n": 4510, "n_fraud": 18, "requests": 48, "canary": false, "seconds": 5.9}
+{"day": 23, "real_time": 1794521446.789, "type": "day_completed", "source": "replay", "details": "", "n": 4548, "n_fraud": 23, "requests": 48, "canary": false, "seconds": 5.8}
+{"day": 24, "real_time": 1794521452.464, "type": "day_completed", "source": "replay", "details": "", "n": 4331, "n_fraud": 21, "requests": 46, "canary": false, "seconds": 5.7}
+{"day": 25, "real_time": 1794521458.267, "type": "day_completed", "source": "replay", "details": "", "n": 4628, "n_fraud": 8, "requests": 48, "canary": false, "seconds": 5.8}
+{"day": 26, "real_time": 1794521464.374, "type": "day_completed", "source": "replay", "details": "", "n": 5152, "n_fraud": 12, "requests": 53, "canary": false, "seconds": 6.1}
+{"day": 27, "real_time": 1794521470.421, "type": "day_completed", "source": "replay", "details": "", "n": 5778, "n_fraud": 19, "requests": 60, "canary": false, "seconds": 6.0}
+{"day": 28, "real_time": 1794521476.211, "type": "day_completed", "source": "replay", "details": "", "n": 4308, "n_fraud": 20, "requests": 45, "canary": false, "seconds": 5.8}
+{"day": 29, "real_time": 1794521481.998, "type": "day_completed", "source": "replay", "details": "", "n": 4379, "n_fraud": 26, "requests": 45, "canary": false, "seconds": 5.8}
+{"day": 30, "real_time": 1794521487.719, "type": "day_completed", "source": "replay", "details": "", "n": 4191, "n_fraud": 23, "requests": 44, "canary": false, "seconds": 5.7}
+{"day": 31, "real_time": 1794521493.75, "type": "day_completed", "source": "replay", "details": "", "n": 4801, "n_fraud": 19, "requests": 49, "canary": false, "seconds": 5.9}
+{"day": 32, "real_time": 1794521499.555, "type": "day_completed", "source": "replay", "details": "", "n": 4848, "n_fraud": 12, "requests": 51, "canary": false, "seconds": 5.8}
+{"day": 33, "real_time": 1794521505.343, "type": "day_completed", "source": "replay", "details": "", "n": 5502, "n_fraud": 12, "requests": 57, "canary": false, "seconds": 5.8}
+{"day": 34, "real_time": 1794521511.434, "type": "day_completed", "source": "replay", "details": "", "n": 5698, "n_fraud": 3, "requests": 59, "canary": false, "seconds": 6.1}
+{"day": 35, "real_time": 1794521518.934, "type": "retrain_started", "source": "replay", "details": "bootstrap: first model from the settled weeks", "workflow": "retrain-d035-jw72k"}
+{"day": 35, "real_time": 1794521618.967, "type": "parity_checked", "source": "pipeline", "details": "Spark vs online on 172,045 transactions: max diff 1.82e-12", "workflow": "retrain-d035-jw72k", "parity": {"n": 172045, "max_abs_diff": {"amount": 0.0, "hour": 0.0, "category_code": 0.0, "is_new_device": 0.0, "is_new_merchant": 0.0, "txn_count_1h": 0.0, "txn_count_24h": 0.0, "amount_sum_24h": 2e-12, "distinct_merchants_24h": 0.0, "avg_amount_7d": 0.0, "amount_ratio_7d": 0.0, "seconds_since_last": 0.0}, "nan_mismatches": 0, "tolerance": 1e-06, "passed": true}}
+{"day": 35, "real_time": 1794521636.853, "type": "challenger_trained", "source": "pipeline", "details": "v1 trained on days 7-27", "workflow": "retrain-d035-jw72k", "version": "1", "metrics": {"n": 22527, "n_fraud": 96, "recall_at_budget": 0.84375, "dollars_caught": 0.9114481035858082, "pr_auc": 0.7748804715207869, "flag_rate": 0.01012118790784392}}
+{"day": 35, "real_time": 1794521652.576, "type": "gate_passed", "source": "pipeline", "details": "v1: no champion yet (bootstrap)", "workflow": "retrain-d035-jw72k", "version": "1", "champion_version": null, "champion": null, "challenger": {"n": 22527, "n_fraud": 96, "recall_at_budget": 0.84375, "dollars_caught": 0.9114481035858082, "pr_auc": 0.7748804715207869, "flag_rate": 0.01012118790784392}}
+{"day": 35, "real_time": 1794521672.514, "type": "canary_step", "source": "rollout", "details": "v1 at 20% of pods", "workflow": "retrain-d035-jw72k", "version": "1", "weight": 20}
+{"day": 35, "real_time": 1794521717.636, "type": "canary_step", "source": "rollout", "details": "v1 at 50% of pods", "workflow": "retrain-d035-jw72k", "version": "1", "weight": 50}
+{"day": 35, "real_time": 1794521774.815, "type": "canary_step", "source": "rollout", "details": "v1 at 100% of pods", "workflow": "retrain-d035-jw72k", "version": "1", "weight": 100}
+{"day": 35, "real_time": 1794521809.51, "type": "promoted", "source": "rollout", "details": "v1 is the new champion", "workflow": "retrain-d035-jw72k", "version": "1", "previous": "none"}
+{"day": 35, "real_time": 1794521823.603, "type": "day_completed", "source": "replay", "details": "bootstrap workflow retrain-d035-jw72k: Succeeded", "n": 4322, "n_fraud": 9, "requests": 45, "canary": false, "seconds": 312.1}
+{"day": 36, "real_time": 1794521833.642, "type": "day_completed", "source": "replay", "details": "no alarm", "n": 4630, "n_fraud": 22, "requests": 49, "canary": false, "seconds": 10.0}
+{"day": 36, "real_time": 1794521833.661, "type": "run_finished", "source": "replay", "details": "replay complete"}

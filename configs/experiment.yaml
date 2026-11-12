@@ -16,12 +16,15 @@ policies:
     every_days: 7
   drift:
     cooldown_days: 7
-    drift_share: 0.25        # share of features Evidently marks as drifted
+    min_drifted_features: 1  # features over Evidently's own drift threshold (0.1)
     prediction_drift: 0.1    # Wasserstein (normed) distance of the score distribution
     recall_drop: 0.15        # delayed-label recall below the champion's holdout recall by this much
+    followups: 2             # weekly follow-up retrains after an alarm-triggered retrain
+    followup_every_days: 7
 
 # How "recovered" is measured (fixed before looking at any policy results).
 recovery:
   baseline_days: 14   # recall over the 14 days before drift is the baseline
   rolling_days: 7     # smooth daily recall over a week
-  recovered_at: 0.95  # recovered once rolling recall is back to 95% of baseline
+  recovered_at: 0.95  # recovered once rolling recall is back to 95% of baseline...
+  sustain_days: 7     # ...and stays there for a week (so one lucky week does not count)

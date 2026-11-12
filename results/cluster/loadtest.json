@@ -1,0 +1,12 @@
+{
+  "requests": 25483,
+  "errors": 0,
+  "seconds": 60.1,
+  "throughput_rps": 424.0,
+  "workers": 16,
+  "p50_ms": 34.2,
+  "p95_ms": 67.1,
+  "p99_ms": 87.2,
+  "scorer_pods": 5,
+  "note": "single-transaction /score requests from inside the cluster, new TCP connection per request, on a laptop kind cluster"
+}
