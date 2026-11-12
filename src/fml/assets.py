@@ -23,23 +23,34 @@ def headline(summary: dict) -> dict:
     rec_d = t["new_fraud_pattern/drift"]["per_seed"]
     rec_s = t["new_fraud_pattern/scheduled"]["per_seed"]
 
-    def days(rows):
+    def days(rows) -> str | None:
         got = [r["time_to_recover"] for r in rows if r["time_to_recover"] is not None]
-        never = len(rows) - len(got)
         if not got:
-            return "never got back to 95% of the pre-drift catch"
-        s = f"{sum(got) / len(got):.0f} days"
-        return s + (f" ({never} of {len(rows)} seeds never did)" if never else "")
+            return None
+        never = len(rows) - len(got)
+        out = f"{sum(got) / len(got):.0f} simulated days"
+        return out + (f" ({never} of {len(rows)} seeds never recovered)" if never else "")
 
+    d_share = 100 * mean("new_fraud_pattern/drift", "recovered_share")
+    s_share = 100 * mean("new_fraud_pattern/scheduled", "recovered_share")
+    d_days, s_days = days(rec_d), days(rec_s)
+    d_retrains = mean("new_fraud_pattern/drift", "retrains")
+    s_retrains = mean("new_fraud_pattern/scheduled", "retrains")
     false_retrains = mean("control/drift", "retrains")
     weekly_control = mean("control/scheduled", "retrains")
+    if d_days or s_days:
+        timing = f" within {d_days or 'the run'}, versus {s_days or 'never'} for weekly retraining"
+    else:
+        timing = (
+            ", the same as weekly retraining "
+            f"({s_share:.0f}%); neither got back to 95% of the pre-drift catch before "
+            "the run ended"
+        )
     text = (
         f"When a new fraud pattern appeared, drift-triggered retraining recovered "
-        f"{100 * mean('new_fraud_pattern/drift', 'recovered_share'):.0f}% of the lost fraud "
-        f"catch (recovery time: {days(rec_d)}), versus "
-        f"{100 * mean('new_fraud_pattern/scheduled', 'recovered_share'):.0f}% for weekly "
-        f"retraining ({days(rec_s)}), with {false_retrains:.1f} unneeded retrains on the "
-        f"no-drift control versus {weekly_control:.0f} for weekly retraining."
+        f"{d_share:.0f}% of the lost fraud catch{timing}. It needed {d_retrains:.1f} retrains "
+        f"instead of {s_retrains:.0f}, and {false_retrains:.0f} false retrains on the no-drift "
+        f"control (weekly retraining: {weekly_control:.0f})."
     )
     return {
         "text": text,

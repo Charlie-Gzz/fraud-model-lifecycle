@@ -173,9 +173,12 @@ def markdown(summary: dict) -> str:
     ]
     for key, row in summary["table"].items():
         scenario, policy = key.split("/")
+        no_drift = scenario == "control"  # nothing was lost, so recovery is meaningless
+        recovered = "n/a" if no_drift else fmt(row["recovered_share"], digits=0)
+        recover_days = "n/a" if no_drift else fmt(row["time_to_recover"], False, 1)
         lines.append(
             f"| {scenario} | {policy} | {fmt(row['recall_post'])} | {fmt(row['dollars_post'])} | "
-            f"{fmt(row['recovered_share'], digits=0)} | {fmt(row['time_to_recover'], False, 1)} | "
+            f"{recovered} | {recover_days} | "
             f"{fmt(row['time_to_detect'], False, 1)} | {fmt(row['retrains'], False, 1)} |"
         )
     return "\n".join(lines) + "\n"
