@@ -72,5 +72,5 @@ gitleaks v8.30.1 (Docker) over the full git history: **no leaks found**. A scan 
 1. Read README and HANDOFF; answer the questions.
 2. Skim screenshots and video for anything personal.
 3. Confirm the secret scan was clean and nothing from your employer appears.
-4. Make the repo public, then enable GitHub Pages.
+4. Make the repo public (done 2026-11-13), then enable GitHub Pages.
 5. Pin the repo on your profile and add it to the portfolio site.

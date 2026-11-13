@@ -24,6 +24,8 @@
 - 2026-11-12: Test set run (60 backtests, frozen config). Full loops for the 4 test scenarios (seed 201) running via `scripts/run_fullloops.sh`.
 - 2026-11-12: **Incident during test/new_fraud_pattern full loop:** I re-applied `k8s/` to update the Grafana dashboard, which reset the Rollout to MODEL_VERSION=none and started a canary to warm-up mode around simulated day 91. Restored the champion (v6) within about a minute. The paused canary pod never served traffic: the run's daily `served_by` counts contain only real model versions (no warm-up rows), so the run is unaffected. `fml apply` now keeps the live model version.
 
+- 2026-11-13: At Charlie's request the repo was made **public**. Generated reports and charts marked `linguist-generated` so the language bar reflects the code (GitHub was counting 227 MB of Evidently HTML). README verified on GitHub: all 9 images served. Pages not enabled yet.
+
 ## Next step
-Waiting for Charlie's answers to `docs/QUESTIONS_FOR_CHARLIE.md`. Then: record the answers in QUESTIONS, HANDOFF, DECISIONS and here; release polish only when he says the repo is ready to share (it stays private until then).
-To bring everything back: `uv run fml up` (images are cached), then `uv run fml demo`.
+- Open: answers to `docs/QUESTIONS_FOR_CHARLIE.md`; enabling GitHub Pages (workflow `pages.yml` is ready, manual trigger).
+- To bring everything back: `uv run fml up` (images are cached), then `uv run fml demo`.
