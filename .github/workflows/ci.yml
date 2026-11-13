@@ -32,7 +32,7 @@ jobs:
       - name: terraform fmt + validate
         run: |
           terraform fmt -check -recursive infra
-          for stage in cluster platform; do
+          for stage in cluster platform cloud-example; do  # cloud-example: validate only, never applied
             terraform -chdir=infra/$stage init -backend=false -input=false
             terraform -chdir=infra/$stage validate
           done

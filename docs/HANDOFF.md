@@ -17,6 +17,7 @@ uv run fml up      # kind cluster + platform + images (about 15 min the first ti
 uv run fml demo    # one scenario end to end (about 30 min)
 uv run fml down    # delete the cluster (images stay for a fast restart)
 ```
+Verified from a fresh clone: `uv sync`, `uv run fml up` and `uv run fml demo --days 40` ran clean in 19 minutes (images already in the Docker cache), all 10 services healthy.
 No cluster needed: `uv run fml results` recomputes every number, `uv run fml assets` redraws charts and the site, `uv run fml backtest --set test` reruns the comparison (resumable).
 
 ## Headline numbers (test scenarios, 5 seeds, fast backtest)
@@ -58,14 +59,14 @@ No cluster needed: `uv run fml results` recomputes every number, `uv run fml ass
 - **Full-loop runs use one seed per scenario** (201); the 5-seed numbers come from the fast backtest. Both are labeled.
 - **Dev results** used an earlier LightGBM seed rule (seed + model version). Dev is tuning only; the test set and full loops use the aligned rule (seed + decision day).
 - **One cluster incident and one bug**, both logged in PROGRESS: a manifest re-apply briefly reset the scorer's model version (no traffic was affected), and the monitor did not persist its drift streak (found by the full loop, fixed, regression test added, affected runs rerun).
-- Stretch items: <!-- STRETCH -->
+- Stretch items: **2 done** (label-free performance estimate: it never noticed any drift and ran 12 points high; `assets/charts/label_free_estimate.png`), **3 done** (`infra/cloud-example`, reuses `infra/platform`, `terraform validate` only, in CI). **1 skipped** (shadow mode next to the canary): it needs the cluster back up for an honest test, and I did not want to ship untested serving code.
 
 ## Memory and cost
 Kind node memory: 4.0 GB idle, peak 8.6 GB during full-loop runs (limit set by the plan: 10 GB). Docker Desktop had 15.6 GB, so the normal (not slim) profile was used. Disk: images 1.4 to 1.9 GB each.
 Cost: $0 (local Docker Desktop only, no cloud, no API keys).
 
 ## Secret scan
-<!-- SECRETS -->
+gitleaks v8.30.1 (Docker) over the full git history: **no leaks found**. A scan of the working directory found 199 matches, all in untracked or ignored files (`.venv` library test fixtures, `.env`, local Terraform state, `.run/`); **none in any tracked file**. Local passwords live only in `.env` (gitignored) and in Kubernetes Secrets inside the (now deleted) cluster.
 
 ## Pre-public checklist
 1. Read README and HANDOFF; answer the questions.

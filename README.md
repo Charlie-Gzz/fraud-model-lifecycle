@@ -63,6 +63,14 @@ Small gaps are expected: on the cluster a canary splits the next day between two
 | Scorer latency | 424 requests/s, p50 34 ms, p95 67 ms, 0 errors (single-transaction requests, 5 pods, laptop) ([`results/cluster/loadtest.json`](results/cluster/loadtest.json)) |
 | Platform memory | about 4.0 GB idle, peak 8.6 GB during a full-loop run (`docker stats` on the kind node) |
 
+## Beyond the plan: can you skip the label wait?
+
+Labels arrive days late, so a natural idea is to estimate recall from the model's own probabilities (confidence-based estimation): expected frauds caught = sum of flagged scores, divided by the sum of all scores. [`src/fml/stretch/label_free.py`](src/fml/stretch/label_free.py) tests it on the test scenarios with no retraining.
+
+![The label-free estimate stays flat around 87 percent in all four scenarios while true recall falls after each drift; settled-label recall follows true recall about a week later](assets/charts/label_free_estimate.png)
+
+It never noticed any of the three drifts and ran about 12 points too high throughout. The reason is the same one that makes the new fraud pattern hard: the model is confident about what it has seen, and new fraud looks normal to it. Settled labels were slow (7 to 30 days to show a 5-point drop) but right. The cloud-ready Terraform layout ([`infra/cloud-example`](infra/cloud-example/main.tf), validate only, never applied) shows the platform code does not depend on kind.
+
 ## Architecture
 
 ![Architecture: a traffic replay sends transactions to a canary-deployed scorer; a drift monitor triggers an Argo retraining workflow that builds Spark features, checks feature parity, trains, gates and rolls out a new model](assets/diagrams/architecture.png)

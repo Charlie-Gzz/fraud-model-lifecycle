@@ -7,9 +7,11 @@
 - **M3 Features + parity:** done. Spark job runs in the cluster; parity on 172,045 transactions, max diff 1.8e-12 (first run, before the `new_merchant_7d` change; rerun pending).
 - **M4 Training + registry:** done. Bootstrap model registered in MLflow with alias `champion`, model-card tags.
 - **M5 Serving + canary:** done. Canary 20/50/100 promoted v1; broken model (schema mismatch) rolled back automatically in 52 s by the error-rate analysis (`results/cluster/broken_model_rollback.json`). Load test 424 req/s, p95 67 ms (`results/cluster/loadtest.json`).
-- **M6/M7:** monitor + workflow + replay written and run end to end for 37 days. Full 110-day dev run in progress (`.run/demo2.log`).
-- **M8:** config frozen after dev v3; test set done (60 runs, `results/summary_test.md`). Full loops on the cluster in progress.
-- **M9:** site (index/results), charts, architecture diagram (done, reviewed), screenshot/video script written; nothing final yet.
+- **M6/M7:** done. All four test scenarios ran hands-off on the cluster (drift -> retrain -> gate -> canary -> promoted; control: no retrains). Alerts and dashboard in `k8s/`.
+- **M8:** done. 60 test backtests, full loops agree within 0.9 points (`results/fullloop/agreement.md`), `fml results` regenerates every number without a cluster (also in CI).
+- **M9:** done. Site, charts, screenshots, video + GIF, diagram, DEMO_SCRIPT, SLIDES_OUTLINE, PORTFOLIO_CARD.
+- **M10:** done. README, HANDOFF, secret scan (history clean, no tracked-file findings), repo description and topics, fresh-clone quickstart verified (19 min), cluster deleted with `fml down`.
+- **Stretch:** 2 (label-free estimate) and 3 (cloud-ready Terraform layout, validate only) done; 1 (shadow mode) skipped, see HANDOFF.
 
 ## Log
 - 2026-11-12: Environment checked (see DECISIONS). Tools pinned in `infra/tools.toml`.
@@ -23,7 +25,5 @@
 - 2026-11-12: **Incident during test/new_fraud_pattern full loop:** I re-applied `k8s/` to update the Grafana dashboard, which reset the Rollout to MODEL_VERSION=none and started a canary to warm-up mode around simulated day 91. Restored the champion (v6) within about a minute. The paused canary pod never served traffic: the run's daily `served_by` counts contain only real model versions (no warm-up rows), so the run is unaffected. `fml apply` now keeps the live model version.
 
 ## Next step
-1. Wait for `scripts/run_fullloops.sh` (log: `.run/fullloops.log`) to finish all 4 test scenarios; each is collected into `results/fullloop/`.
-2. `uv run fml assets` (charts, agreement table, site data), then `uv run fml screens site` and `uv run fml screens cluster --workflow <a drift retrain workflow>`; review every image.
-3. `uv run fml screens video` (while Grafana still has recent data).
-4. Fill README placeholders (HERO, HEADLINE, RESULTS, COST), write HANDOFF, final secret scan, fresh-clone quickstart check, `fml down`.
+Waiting for Charlie's answers to `docs/QUESTIONS_FOR_CHARLIE.md`. Then: record the answers in QUESTIONS, HANDOFF, DECISIONS and here; release polish only when he says the repo is ready to share (it stays private until then).
+To bring everything back: `uv run fml up` (images are cached), then `uv run fml demo`.
