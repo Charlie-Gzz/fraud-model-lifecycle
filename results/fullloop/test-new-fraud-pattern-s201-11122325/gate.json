@@ -1,0 +1,83 @@
+{
+ "retrain-d035-9jhkv": {
+  "passed": true,
+  "reason": "no champion yet (bootstrap)",
+  "version": "5",
+  "champion_version": null,
+  "champion": null,
+  "challenger": {
+   "n": 23663,
+   "n_fraud": 90,
+   "recall_at_budget": 0.6888888888888889,
+   "dollars_caught": 0.7488278781403015,
+   "pr_auc": 0.5675874281509432,
+   "flag_rate": 0.010100156362253306
+  }
+ },
+ "retrain-d086-56mg4": {
+  "passed": true,
+  "reason": "recall@budget 0.500 > champion 0.493",
+  "version": "6",
+  "champion_version": "5",
+  "champion": {
+   "n": 24764,
+   "n_fraud": 150,
+   "recall_at_budget": 0.49333333333333335,
+   "dollars_caught": 0.4568824798366519,
+   "pr_auc": 0.42733936224416935,
+   "flag_rate": 0.010095299628492973
+  },
+  "challenger": {
+   "n": 24764,
+   "n_fraud": 150,
+   "recall_at_budget": 0.5,
+   "dollars_caught": 0.4572381078560829,
+   "pr_auc": 0.46311603435944554,
+   "flag_rate": 0.010095299628492973
+  }
+ },
+ "retrain-d093-hp4dc": {
+  "passed": false,
+  "reason": "recall@budget 0.550 not above champion 0.563",
+  "version": "7",
+  "champion_version": "6",
+  "champion": {
+   "n": 24229,
+   "n_fraud": 151,
+   "recall_at_budget": 0.5629139072847682,
+   "dollars_caught": 0.5224695702852507,
+   "pr_auc": 0.4710316871874738,
+   "flag_rate": 0.010070576581782162
+  },
+  "challenger": {
+   "n": 24229,
+   "n_fraud": 151,
+   "recall_at_budget": 0.5496688741721855,
+   "dollars_caught": 0.4859075318960942,
+   "pr_auc": 0.4903386926295137,
+   "flag_rate": 0.010070576581782162
+  }
+ },
+ "retrain-d100-f29x5": {
+  "passed": true,
+  "reason": "recall@budget 0.629 > champion 0.616",
+  "version": "8",
+  "champion_version": "6",
+  "champion": {
+   "n": 26152,
+   "n_fraud": 151,
+   "recall_at_budget": 0.6158940397350994,
+   "dollars_caught": 0.5097020940762278,
+   "pr_auc": 0.5343367664518165,
+   "flag_rate": 0.01009483022330988
+  },
+  "challenger": {
+   "n": 26152,
+   "n_fraud": 151,
+   "recall_at_budget": 0.6291390728476821,
+   "dollars_caught": 0.5148749557595669,
+   "pr_auc": 0.5405936420389396,
+   "flag_rate": 0.01009483022330988
+  }
+ }
+}

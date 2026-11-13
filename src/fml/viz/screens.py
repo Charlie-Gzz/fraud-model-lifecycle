@@ -111,25 +111,45 @@ def site_screens() -> None:
             shot(page, "evidently_report")
 
 
+def _dismiss(page) -> None:
+    """Close first-visit popups (Argo's survey, MLflow's assistant panel)."""
+    import re
+
+    for locator in (
+        page.get_by_role("button", name=re.compile(r"^(close|×)$", re.I)),
+        page.locator("text=×"),
+        page.locator("[aria-label='Close'], [aria-label='close']"),
+        page.locator(".modal-close"),  # Argo's release-notes popup
+    ):
+        try:
+            if locator.count():
+                locator.first.click(timeout=2000)
+                time.sleep(0.5)
+        except Exception:
+            pass
+    page.keyboard.press("Escape")
+    time.sleep(0.5)
+
+
 def cluster_screens(workflow: str | None = None) -> None:
     with browser() as ctx:
         page = ctx.new_page()
         page.goto(
             "http://127.0.0.1:3000/d/fraud-lifecycle?orgId=1&kiosk&from=now-30m&to=now",
-            wait_until="networkidle",
+            wait_until="load",
         )
         time.sleep(6)
         shot(page, "grafana_dashboard")
-        page.goto("http://127.0.0.1:5000/#/models/fraud-detector", wait_until="networkidle")
+        page.goto("http://127.0.0.1:5000/#/models/fraud-detector", wait_until="load")
         time.sleep(4)
+        _dismiss(page)
         shot(page, "mlflow_model_aliases")
         if workflow:
-            page.goto(f"http://127.0.0.1:2746/workflows/fml/{workflow}", wait_until="networkidle")
+            page.goto(f"http://127.0.0.1:2746/workflows/fml/{workflow}", wait_until="load")
             time.sleep(5)
+            _dismiss(page)
             shot(page, "argo_workflow_graph")
-        page.goto(
-            "http://127.0.0.1:3100/rollouts/rollout/fml/fraud-scorer", wait_until="networkidle"
-        )
+        page.goto("http://127.0.0.1:3100/rollouts/rollout/fml/fraud-scorer", wait_until="load")
         time.sleep(3)
         shot(page, "argo_rollouts")
 

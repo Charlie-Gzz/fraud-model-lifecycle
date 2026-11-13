@@ -1,0 +1,82 @@
+{
+ "retrain-d035-9jhkv": {
+  "version": "5",
+  "metrics": {
+   "n": 23663,
+   "n_fraud": 90,
+   "recall_at_budget": 0.6888888888888889,
+   "dollars_caught": 0.7488278781403015,
+   "pr_auc": 0.5675874281509432,
+   "flag_rate": 0.010100156362253306
+  },
+  "threshold": 0.018007041188958336,
+  "train": [
+   7,
+   27
+  ],
+  "holdout": [
+   28,
+   32
+  ]
+ },
+ "retrain-d086-56mg4": {
+  "version": "6",
+  "metrics": {
+   "n": 24764,
+   "n_fraud": 150,
+   "recall_at_budget": 0.5,
+   "dollars_caught": 0.4572381078560829,
+   "pr_auc": 0.46311603435944554,
+   "flag_rate": 0.010095299628492973
+  },
+  "threshold": 0.049350935055579304,
+  "train": [
+   58,
+   78
+  ],
+  "holdout": [
+   79,
+   83
+  ]
+ },
+ "retrain-d093-hp4dc": {
+  "version": "7",
+  "metrics": {
+   "n": 24229,
+   "n_fraud": 151,
+   "recall_at_budget": 0.5496688741721855,
+   "dollars_caught": 0.4859075318960942,
+   "pr_auc": 0.4903386926295137,
+   "flag_rate": 0.010070576581782162
+  },
+  "threshold": 0.08754899024242241,
+  "train": [
+   65,
+   85
+  ],
+  "holdout": [
+   86,
+   90
+  ]
+ },
+ "retrain-d100-f29x5": {
+  "version": "8",
+  "metrics": {
+   "n": 26152,
+   "n_fraud": 151,
+   "recall_at_budget": 0.6291390728476821,
+   "dollars_caught": 0.5148749557595669,
+   "pr_auc": 0.5405936420389396,
+   "flag_rate": 0.01009483022330988
+  },
+  "threshold": 0.10218466493619344,
+  "train": [
+   72,
+   92
+  ],
+  "holdout": [
+   93,
+   97
+  ]
+ }
+}

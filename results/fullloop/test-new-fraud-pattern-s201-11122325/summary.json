@@ -1,0 +1,13 @@
+{
+  "run": "test-new-fraud-pattern-s201-11122325",
+  "scenario": "test/new_fraud_pattern",
+  "seed": 201,
+  "policy": "drift",
+  "drift_start": 65,
+  "events": 141,
+  "retrains": 4,
+  "promotions": 3,
+  "rollbacks": 0,
+  "days_served": 74,
+  "mean_recall": 0.634399077889757
+}
