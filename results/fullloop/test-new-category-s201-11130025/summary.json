@@ -1,0 +1,13 @@
+{
+  "run": "test-new-category-s201-11130025",
+  "scenario": "test/new_category",
+  "seed": 201,
+  "policy": "drift",
+  "drift_start": 65,
+  "events": 152,
+  "retrains": 5,
+  "promotions": 4,
+  "rollbacks": 0,
+  "days_served": 74,
+  "mean_recall": 0.7283548870647
+}

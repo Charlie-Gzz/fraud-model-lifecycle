@@ -1,0 +1,105 @@
+{
+ "retrain-d035-stgmv": {
+  "passed": true,
+  "reason": "no champion yet (bootstrap)",
+  "version": "10",
+  "champion_version": null,
+  "champion": null,
+  "challenger": {
+   "n": 23663,
+   "n_fraud": 93,
+   "recall_at_budget": 0.6666666666666666,
+   "dollars_caught": 0.72190881612332,
+   "pr_auc": 0.571364156564744,
+   "flag_rate": 0.010100156362253306
+  }
+ },
+ "retrain-d073-p98h7": {
+  "passed": true,
+  "reason": "recall@budget 0.779 > champion 0.727",
+  "version": "11",
+  "champion_version": "10",
+  "champion": {
+   "n": 23655,
+   "n_fraud": 77,
+   "recall_at_budget": 0.7272727272727273,
+   "dollars_caught": 0.7217299844126985,
+   "pr_auc": 0.5644270444783707,
+   "flag_rate": 0.010145846544071021
+  },
+  "challenger": {
+   "n": 23655,
+   "n_fraud": 77,
+   "recall_at_budget": 0.7792207792207793,
+   "dollars_caught": 0.7758503157438341,
+   "pr_auc": 0.6093434519609641,
+   "flag_rate": 0.010145846544071021
+  }
+ },
+ "retrain-d080-t7qxn": {
+  "passed": true,
+  "reason": "recall@budget 0.692 > champion 0.675",
+  "version": "12",
+  "champion_version": "11",
+  "champion": {
+   "n": 24442,
+   "n_fraud": 117,
+   "recall_at_budget": 0.6752136752136753,
+   "dollars_caught": 0.5048999845814572,
+   "pr_auc": 0.5525898143945349,
+   "flag_rate": 0.010105556010146469
+  },
+  "challenger": {
+   "n": 24442,
+   "n_fraud": 117,
+   "recall_at_budget": 0.6923076923076923,
+   "dollars_caught": 0.5610864272973275,
+   "pr_auc": 0.5623341703727335,
+   "flag_rate": 0.010105556010146469
+  }
+ },
+ "retrain-d087-m857s": {
+  "passed": true,
+  "reason": "recall@budget 0.773 > champion 0.758",
+  "version": "13",
+  "champion_version": "12",
+  "champion": {
+   "n": 25235,
+   "n_fraud": 128,
+   "recall_at_budget": 0.7578125,
+   "dollars_caught": 0.7887917065275714,
+   "pr_auc": 0.6739048364548319,
+   "flag_rate": 0.010105012878937983
+  },
+  "challenger": {
+   "n": 25235,
+   "n_fraud": 128,
+   "recall_at_budget": 0.7734375,
+   "dollars_caught": 0.7914111954275176,
+   "pr_auc": 0.6913228371773555,
+   "flag_rate": 0.010105012878937983
+  }
+ },
+ "retrain-d094-gr9vh": {
+  "passed": false,
+  "reason": "recall@budget 0.731 not above champion 0.784",
+  "version": "14",
+  "champion_version": "13",
+  "champion": {
+   "n": 23958,
+   "n_fraud": 134,
+   "recall_at_budget": 0.7835820895522388,
+   "dollars_caught": 0.7126663475483046,
+   "pr_auc": 0.7383917092259775,
+   "flag_rate": 0.010101010101010102
+  },
+  "challenger": {
+   "n": 23958,
+   "n_fraud": 134,
+   "recall_at_budget": 0.7313432835820896,
+   "dollars_caught": 0.6647453279225252,
+   "pr_auc": 0.7161952572580349,
+   "flag_rate": 0.010101010101010102
+  }
+ }
+}

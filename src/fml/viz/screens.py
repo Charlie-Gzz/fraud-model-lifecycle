@@ -221,12 +221,15 @@ def video(with_grafana: bool = True) -> None:
             page.mouse.move(box["x"] + 60 + i * (box["width"] - 80) / 40, box["y"] + 120)
             time.sleep(0.12)
         markers = page.locator(".marker")
-        for label in ("Drift detected", "Gate passed", "Promoted"):
+        # The drift episode: first alarm, then its gate and promotion (index 0 of those
+        # is the bootstrap model, so take the second when there is one).
+        for label, idx in (("Drift detected", 0), ("Gate passed", 1), ("Promoted", 1)):
             m = page.locator(f'.marker[aria-label^="{label}"]')
             if m.count():
-                m.first.hover()
+                target = m.nth(min(idx, m.count() - 1))
+                target.hover()
                 time.sleep(0.8)
-                m.first.click()
+                target.click()
                 time.sleep(2.5)
         _ = markers
         for sc in ("new_category", "amount_drift", "control"):

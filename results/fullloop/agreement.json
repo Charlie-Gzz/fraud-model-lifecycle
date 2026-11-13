@@ -1,5 +1,259 @@
 [
  {
+  "run": "test-amount-drift-s201-11130106",
+  "scenario": "test/amount_drift",
+  "seed": 201,
+  "drift_detected": {
+   "full_loop": [
+    70,
+    75,
+    76,
+    77,
+    80,
+    81,
+    82,
+    83,
+    84,
+    89,
+    90,
+    91,
+    94,
+    95,
+    96,
+    97,
+    98,
+    103,
+    104,
+    105,
+    108,
+    109
+   ],
+   "backtest": [
+    70,
+    73,
+    74,
+    75,
+    76,
+    77,
+    80,
+    81,
+    82,
+    83,
+    84,
+    89,
+    90,
+    91,
+    94,
+    95,
+    96,
+    97,
+    98,
+    104,
+    105,
+    108,
+    109
+   ],
+   "same": false
+  },
+  "retrain_started": {
+   "full_loop": [
+    70,
+    77,
+    84,
+    91,
+    98,
+    105
+   ],
+   "backtest": [
+    70,
+    77,
+    84,
+    91,
+    98,
+    105
+   ],
+   "same": true
+  },
+  "gate_passed": {
+   "full_loop": [
+    70,
+    84,
+    98
+   ],
+   "backtest": [
+    84,
+    98
+   ],
+   "same": false
+  },
+  "gate_failed": {
+   "full_loop": [
+    77,
+    91,
+    105
+   ],
+   "backtest": [
+    70,
+    77,
+    91,
+    105
+   ],
+   "same": false
+  },
+  "promoted": {
+   "full_loop": [
+    70,
+    84,
+    98
+   ],
+   "backtest": [
+    84,
+    98
+   ],
+   "same": false
+  },
+  "rolled_back": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "recall_after_drift": {
+   "full_loop": 0.7347781217750258,
+   "backtest": 0.7337461300309598,
+   "gap_points": 0.10319917440659854
+  },
+  "daily_recall_identical_share": 0.6891891891891891
+ },
+ {
+  "run": "test-control-s201-11130150",
+  "scenario": "test/control",
+  "seed": 201,
+  "drift_detected": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "retrain_started": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "gate_passed": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "gate_failed": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "promoted": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "rolled_back": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "recall_after_drift": {
+   "full_loop": 0.7708978328173375,
+   "backtest": 0.7657378740970072,
+   "gap_points": 0.515995872033026
+  },
+  "daily_recall_identical_share": 0.7162162162162162
+ },
+ {
+  "run": "test-new-category-s201-11130025",
+  "scenario": "test/new_category",
+  "seed": 201,
+  "drift_detected": {
+   "full_loop": [
+    73,
+    78,
+    79,
+    80
+   ],
+   "backtest": [
+    73,
+    78,
+    79,
+    80,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87
+   ],
+   "same": false
+  },
+  "retrain_started": {
+   "full_loop": [
+    73,
+    80,
+    87,
+    94
+   ],
+   "backtest": [
+    73,
+    80,
+    87,
+    94,
+    101
+   ],
+   "same": false
+  },
+  "gate_passed": {
+   "full_loop": [
+    73,
+    80,
+    87
+   ],
+   "backtest": [
+    73,
+    87
+   ],
+   "same": false
+  },
+  "gate_failed": {
+   "full_loop": [
+    94
+   ],
+   "backtest": [
+    80,
+    94,
+    101
+   ],
+   "same": false
+  },
+  "promoted": {
+   "full_loop": [
+    73,
+    80,
+    87
+   ],
+   "backtest": [
+    73,
+    87
+   ],
+   "same": false
+  },
+  "rolled_back": {
+   "full_loop": [],
+   "backtest": [],
+   "same": true
+  },
+  "recall_after_drift": {
+   "full_loop": 0.7228571428571429,
+   "backtest": 0.7142857142857143,
+   "gap_points": 0.8571428571428563
+  },
+  "daily_recall_identical_share": 0.6621621621621622
+ },
+ {
   "run": "test-new-fraud-pattern-s201-11122325",
   "scenario": "test/new_fraud_pattern",
   "seed": 201,

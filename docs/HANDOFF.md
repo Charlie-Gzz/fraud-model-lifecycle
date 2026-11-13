@@ -20,9 +20,20 @@ uv run fml down    # delete the cluster (images stay for a fast restart)
 No cluster needed: `uv run fml results` recomputes every number, `uv run fml assets` redraws charts and the site, `uv run fml backtest --set test` reruns the comparison (resumable).
 
 ## Headline numbers (test scenarios, 5 seeds, fast backtest)
-<!-- HEADLINE -->
+> When a new fraud pattern appeared, drift-triggered retraining recovered 13% of the lost fraud catch, the same as weekly retraining (13%); neither got back to 95% of the pre-drift catch before the run ended. It needed 3.8 retrains instead of 10, and 0 false retrains on the no-drift control (weekly retraining: 10).
 
-<!-- NUMBERS -->
+| Test scenario | Fraud caught after drift: drift-triggered / weekly / none | Retrains: drift vs weekly | Time to detect |
+|---|---|---|---|
+| New fraud pattern | 56.7% / 56.6% / 53.6% | 3.8 vs 10 | 10.2 days (5 to 22), via recall drop |
+| New merchant category | 69.3% / 69.5% / 63.6% | 4.4 vs 10 | 8.0 days |
+| Amounts creep up | 74.1% / 73.8% / 71.7% | 6.0 vs 10 | 5.2 days |
+| Control (no drift) | 77.9% / 77.9% / 77.9% | 0 vs 10 | 2 alarms in cooldown, 0 retrains |
+
+- **Full Kubernetes loop (seed 201, one run per scenario):** fraud caught within 0.9 points of the backtest in all four; identical retrain days on amount drift and the control, one day earlier on the new pattern, one fewer follow-up on the new category (`results/fullloop/agreement.md`).
+- **Feature parity:** Spark vs online features passed in all 17 retrain workflows (173k to 518k transactions each), max difference 4e-12.
+- **Canary safety:** broken model rolled back automatically in 52 s by the Prometheus error-rate analysis.
+- **Scorer:** 424 req/s, p95 67 ms, 0 errors (5 pods, laptop).
+- **Design history (dev only):** v1 lost to weekly retraining on the new pattern; v2 had 4-17 false alarms per run; v3 frozen before the test set. Tables in `results/archive/`.
 
 ## Where the assets are
 - Charts (PNG 1600px + SVG): `assets/charts/`
@@ -50,7 +61,7 @@ No cluster needed: `uv run fml results` recomputes every number, `uv run fml ass
 - Stretch items: <!-- STRETCH -->
 
 ## Memory and cost
-<!-- MEMORY -->
+Kind node memory: 4.0 GB idle, peak 8.6 GB during full-loop runs (limit set by the plan: 10 GB). Docker Desktop had 15.6 GB, so the normal (not slim) profile was used. Disk: images 1.4 to 1.9 GB each.
 Cost: $0 (local Docker Desktop only, no cloud, no API keys).
 
 ## Secret scan

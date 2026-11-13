@@ -1,0 +1,13 @@
+{
+  "run": "test-control-s201-11130150",
+  "scenario": "test/control",
+  "seed": 201,
+  "policy": "drift",
+  "drift_start": null,
+  "events": 120,
+  "retrains": 1,
+  "promotions": 1,
+  "rollbacks": 0,
+  "days_served": 74,
+  "mean_recall": 0.7654487225131319
+}

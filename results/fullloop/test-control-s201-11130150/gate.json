@@ -1,0 +1,17 @@
+{
+ "retrain-d035-k5zf4": {
+  "passed": true,
+  "reason": "no champion yet (bootstrap)",
+  "version": "22",
+  "champion_version": null,
+  "champion": null,
+  "challenger": {
+   "n": 23663,
+   "n_fraud": 92,
+   "recall_at_budget": 0.6847826086956522,
+   "dollars_caught": 0.7472752451933498,
+   "pr_auc": 0.5884039599921729,
+   "flag_rate": 0.010100156362253306
+  }
+ }
+}

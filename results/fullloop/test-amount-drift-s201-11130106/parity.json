@@ -1,0 +1,142 @@
+{
+ "retrain-d035-rb476": {
+  "n": 173660,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 1e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ },
+ "retrain-d070-db9kt": {
+  "n": 344184,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 4e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ },
+ "retrain-d077-rdc4n": {
+  "n": 378713,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 4e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ },
+ "retrain-d084-t5ckf": {
+  "n": 413352,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 4e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ },
+ "retrain-d091-hmcdt": {
+  "n": 448452,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 4e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ },
+ "retrain-d098-5dcg7": {
+  "n": 482078,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 4e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ },
+ "retrain-d105-zbtxb": {
+  "n": 517612,
+  "max_abs_diff": {
+   "amount": 0.0,
+   "hour": 0.0,
+   "category_code": 0.0,
+   "is_new_device": 0.0,
+   "new_merchant_7d": 0.0,
+   "txn_count_1h": 0.0,
+   "txn_count_24h": 0.0,
+   "amount_sum_24h": 4e-12,
+   "distinct_merchants_24h": 0.0,
+   "avg_amount_7d": 0.0,
+   "amount_ratio_7d": 0.0,
+   "seconds_since_last": 0.0
+  },
+  "nan_mismatches": 0,
+  "tolerance": 1e-06,
+  "passed": true
+ }
+}

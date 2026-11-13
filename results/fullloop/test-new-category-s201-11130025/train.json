@@ -1,0 +1,102 @@
+{
+ "retrain-d035-stgmv": {
+  "version": "10",
+  "metrics": {
+   "n": 23663,
+   "n_fraud": 93,
+   "recall_at_budget": 0.6666666666666666,
+   "dollars_caught": 0.72190881612332,
+   "pr_auc": 0.571364156564744,
+   "flag_rate": 0.010100156362253306
+  },
+  "threshold": 0.018007041188958336,
+  "train": [
+   7,
+   27
+  ],
+  "holdout": [
+   28,
+   32
+  ]
+ },
+ "retrain-d073-p98h7": {
+  "version": "11",
+  "metrics": {
+   "n": 23655,
+   "n_fraud": 77,
+   "recall_at_budget": 0.7792207792207793,
+   "dollars_caught": 0.7758503157438341,
+   "pr_auc": 0.6093434519609641,
+   "flag_rate": 0.010145846544071021
+  },
+  "threshold": 0.019345330269669538,
+  "train": [
+   45,
+   65
+  ],
+  "holdout": [
+   66,
+   70
+  ]
+ },
+ "retrain-d080-t7qxn": {
+  "version": "12",
+  "metrics": {
+   "n": 24442,
+   "n_fraud": 117,
+   "recall_at_budget": 0.6923076923076923,
+   "dollars_caught": 0.5610864272973275,
+   "pr_auc": 0.5623341703727335,
+   "flag_rate": 0.010105556010146469
+  },
+  "threshold": 0.024760096653093918,
+  "train": [
+   52,
+   72
+  ],
+  "holdout": [
+   73,
+   77
+  ]
+ },
+ "retrain-d087-m857s": {
+  "version": "13",
+  "metrics": {
+   "n": 25235,
+   "n_fraud": 128,
+   "recall_at_budget": 0.7734375,
+   "dollars_caught": 0.7914111954275176,
+   "pr_auc": 0.6913228371773555,
+   "flag_rate": 0.010105012878937983
+  },
+  "threshold": 0.045470652436482274,
+  "train": [
+   59,
+   79
+  ],
+  "holdout": [
+   80,
+   84
+  ]
+ },
+ "retrain-d094-gr9vh": {
+  "version": "14",
+  "metrics": {
+   "n": 23958,
+   "n_fraud": 134,
+   "recall_at_budget": 0.7313432835820896,
+   "dollars_caught": 0.6647453279225252,
+   "pr_auc": 0.7161952572580349,
+   "flag_rate": 0.010101010101010102
+  },
+  "threshold": 0.049609928316806697,
+  "train": [
+   66,
+   86
+  ],
+  "holdout": [
+   87,
+   91
+  ]
+ }
+}

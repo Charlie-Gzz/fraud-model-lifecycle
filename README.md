@@ -6,11 +6,15 @@
 Fraud patterns change, and a model trained last month quietly gets worse. This project runs a fraud model's whole lifecycle on a local Kubernetes cluster, catches the drift, retrains and safely rolls out a better model on its own, and measures whether that actually beats retraining on a schedule.
 </p>
 
-<!-- HERO -->
+<p align="center"><img src="assets/video/walkthrough.gif" alt="Walkthrough: the lifecycle timeline for a new fraud pattern, with a drift alarm, the promotion gate, a canary rollout to 20, 50 and 100 percent, then the Grafana dashboard" width="900"></p>
+
+<p align="center"><a href="assets/video/walkthrough.mp4">Video (MP4)</a> · <a href="site/index.html">Results site</a> · <a href="results/summary_test.md">Full results table</a></p>
 
 ## Headline
 
-<!-- HEADLINE -->
+> **When a new fraud pattern appeared, drift-triggered retraining recovered 13% of the lost fraud catch, the same as weekly retraining (13%); neither got back to 95% of the pre-drift catch before the run ended. It needed 3.8 retrains instead of 10, and 0 false retrains on the no-drift control (weekly retraining: 10).**
+
+In short: drift-triggered retraining caught as much fraud as weekly retraining in every drift scenario, with 14 retrains instead of 40, and it never retrained when nothing had changed. It could not rescue a new fraud pattern faster than its labels arrive, and neither could weekly retraining.
 
 ## Results
 
@@ -32,14 +36,32 @@ What this says:
 
 ![Fraud caught over time per scenario and policy, with seed bands](assets/charts/fraud_caught_over_time.png)
 
-<!-- FULLLOOP -->
+### The same loop on the real platform
+
+Each test scenario also ran once end to end on the Kubernetes cluster (seed 201): the replay sends every transaction through the scorer, the monitor raises alarms, Argo trains and gates challengers, and Argo Rollouts canaries them. The cluster and the fast backtest share code, data and seeds, so they should make the same decisions:
+
+| Scenario (seed 201) | Retrain days: cluster | Retrain days: backtest | Fraud caught after drift: cluster vs backtest |
+|---|---|---|---|
+| New fraud pattern | 86, 93, 100 | 87, 94, 101 | 56.6% vs 56.5% |
+| New merchant category | 73, 80, 87, 94 | 73, 80, 87, 94, 101 | 72.3% vs 71.4% |
+| Amounts creep up | 70, 77, 84, 91, 98, 105 | 70, 77, 84, 91, 98, 105 | 73.5% vs 73.4% |
+| Control (no drift) | none | none | 77.1% vs 76.6% |
+
+Same retrain days in two scenarios; one day earlier on the new fraud pattern; one fewer follow-up on the new category. Promotion-gate outcomes differ on a few close calls (details in [`results/fullloop/agreement.md`](results/fullloop/agreement.md)). Fraud caught agrees within 0.9 points everywhere.
+
+Small gaps are expected: on the cluster a canary splits the next day between two model versions, and Spark's float sums differ from numpy's in the last bits (max feature difference 4e-12 over 17 retrains), which can flip a close promotion-gate call.
+
+![Lifecycle timeline for the new fraud pattern run on the cluster: drift alarm, gate, canary steps and promotion, with the champion vs challenger comparison](assets/screenshots/timeline_drift_detail.png)
+
+| Argo Workflows: one retrain | Argo Rollouts: canary at 50% | MLflow: versions, aliases, model card |
+|---|---|---|
+| ![Argo workflow graph with gather, Spark features, parity, train, gate and canary steps all green](assets/screenshots/argo_workflow_graph.png) | ![Argo Rollouts dashboard mid-canary at 50 percent with a running analysis](assets/screenshots/argo_rollouts_canary.png) | ![MLflow registered model with champion and challenger aliases and model-card tags](assets/screenshots/mlflow_model_aliases.png) |
 
 | Also measured | Result |
 |---|---|
 | Canary safety | A deliberately broken model (binary expects 11 features, metadata says 12) was rolled back by the Prometheus error-rate analysis in 52 s; the champion kept serving ([`results/cluster/broken_model_rollback.json`](results/cluster/broken_model_rollback.json)) |
 | Scorer latency | 424 requests/s, p50 34 ms, p95 67 ms, 0 errors (single-transaction requests, 5 pods, laptop) ([`results/cluster/loadtest.json`](results/cluster/loadtest.json)) |
-| Platform memory | about 4.0 GB idle, peak <!-- PEAKMEM --> during a full-loop run (`docker stats` on the kind node) |
-
+| Platform memory | about 4.0 GB idle, peak 8.6 GB during a full-loop run (`docker stats` on the kind node) |
 
 ## Architecture
 
@@ -59,7 +81,7 @@ What this says:
 
 ## Quickstart
 
-Needs Docker Desktop (about 8 GB of memory for Docker), [uv](https://docs.astral.sh/uv/) and Git. Nothing else is installed system-wide: `fml up` downloads pinned, checksum-verified copies of kind, kubectl, helm, terraform and the Argo CLIs into `.tools/`.
+Needs Docker Desktop with at least 10 GB of memory (the cluster peaks at 8.6 GB), [uv](https://docs.astral.sh/uv/) and Git. Nothing else is installed system-wide: `fml up` downloads pinned, checksum-verified copies of kind, kubectl, helm, terraform and the Argo CLIs into `.tools/`.
 
 ```bash
 uv sync
@@ -75,7 +97,7 @@ No cluster needed for the numbers: `uv run fml backtest --set test` reruns the p
 
 1. **Data.** A seeded generator makes 110 days of card transactions for 3,000 users (about 4,700 a day). Five fraud patterns: card testing, account takeover (a third from the victim's own hijacked phone), quiet single stolen-card purchases, and two that only appear with drift: a scam paid from the victim's own phone at new merchants, and cash-outs in a new crypto category. Legit look-alikes (in-app purchase bursts, new phones, the odd big purchase) keep the problem honest: about 77% recall at the budget before drift, not 99%.
 2. **Delayed labels.** Fraud is reported 0.5 to about 10 days after it happens (median 2). A day counts as "settled" 3 days later. Training, the promotion gate and the monitor's recall only use labels that would have arrived by that simulated day.
-3. **Features.** Twelve per-user features (counts and sums over 1 hour, 24 hours and 7 days, distinct merchants, amount vs the user's 7-day average, new device, merchant not used in 7 days, time since last transaction). One definition, three implementations: Spark for training, Redis for serving, numpy for the fast backtest. Every retrain checks Spark against the features the scorer actually used.
+3. **Features.** Twelve features: amount, hour and merchant category, plus per-user history (counts and sums over 1 hour, 24 hours and 7 days, distinct merchants, amount vs the user's 7-day average, new device, merchant not used in 7 days, time since last transaction). One definition, three implementations: Spark for training, Redis for serving, numpy for the fast backtest. Every retrain checks Spark against the features the scorer actually used.
 4. **Serving.** FastAPI scores each transaction with LightGBM, flags the top 1% of scores (the analysts' daily review budget), exports Prometheus metrics, and logs every request to S3.
 5. **Monitoring.** At the end of each simulated day the monitor compares the last 7 days of traffic with the champion's training data using Evidently (Wasserstein for numbers, Jensen-Shannon for categories, threshold 0.1), checks the score distribution, and measures recall on settled labels.
 6. **Retraining policy.** Retrain when a feature drifts for 3 days in a row, the score distribution drifts, or settled-label recall drops 15 points below the champion's holdout recall. At most once a week, plus two weekly follow-up retrains after an alarm, because labels for a new pattern keep arriving for weeks.
@@ -90,6 +112,7 @@ No cluster needed for the numbers: `uv run fml backtest --set test` reruns the p
 - **The first synthetic data was too easy.** 99% recall at a 1% budget is not believable. Harder fraud and legit look-alikes, tuned on dev data only, brought it to about 77%.
 - **"Retrain on drift" lost to "retrain weekly" at first.** It retrained once and went quiet, while labels for a new fraud pattern arrive over weeks. Follow-up retrains fixed the cause. Both versions are kept in `results/archive/`.
 - **A feature looked like drift on the control.** "Never used this merchant before" keeps falling as simulated histories fill up, so the monitor fired 4 to 17 false alarms per dev run. Redefining it as "not used in the last 7 days" and requiring 3 days of persistence removed nearly all of them.
+- **The full loop caught a bug the backtest could not.** The monitor service saved its policy state only when it started a retrain, so the 3-day drift streak reset every simulated day and data-drift alarms never fired on the cluster (110 days of a new merchant category, no alarm). The backtest keeps state in memory, so it was fine. Fixed, regression test added, affected runs rerun.
 - **The object store ran out of memory** when the monitor read hundreds of small prediction-log files at once. The limit went from 384 MB to 1 GB.
 
 ## Limitations
@@ -100,11 +123,12 @@ No cluster needed for the numbers: `uv run fml backtest --set test` reruns the p
 - **Simulated clock.** The replay is the clock, and it pauses while a retraining workflow trains. In production, traffic would keep flowing during training.
 - **Small daily fraud counts** (about 20 a day) make daily recall noisy. Results pool days and report the spread over seeds.
 - **Label model is simple.** Delays are i.i.d. and fraud never gets reported as legit. Real chargeback data is messier.
+- **One seed per full-loop run.** The 5-seed numbers come from the fast backtest; the cluster runs (seed 201) check that the two agree.
 - **Prediction drift was never the signal.** In every scenario, alarms came from feature drift or the recall drop.
 
 ## Cost to reproduce
 
-$0. Everything runs locally in Docker Desktop: no cloud, no GPU, no API keys. <!-- COST -->
+$0. Everything runs locally in Docker Desktop: no cloud, no GPU, no API keys. Peak memory of the kind node was 8.6 GB during full-loop runs (Docker Desktop had 15.6 GB). Images: runtime 1.8 GB, Spark 1.9 GB, MLflow 1.4 GB. A full-loop run takes 20 to 45 minutes; the 60-run backtest about 40 minutes on 12 cores.
 
 ## License
 

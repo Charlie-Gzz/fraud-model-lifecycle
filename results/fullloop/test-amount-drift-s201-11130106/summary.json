@@ -1,0 +1,13 @@
+{
+  "run": "test-amount-drift-s201-11130106",
+  "scenario": "test/amount_drift",
+  "seed": 201,
+  "policy": "drift",
+  "drift_start": 65,
+  "events": 178,
+  "retrains": 7,
+  "promotions": 4,
+  "rollbacks": 0,
+  "days_served": 74,
+  "mean_recall": 0.743872697768937
+}

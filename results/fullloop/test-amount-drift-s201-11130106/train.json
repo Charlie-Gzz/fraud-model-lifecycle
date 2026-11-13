@@ -1,0 +1,142 @@
+{
+ "retrain-d035-rb476": {
+  "version": "15",
+  "metrics": {
+   "n": 23663,
+   "n_fraud": 92,
+   "recall_at_budget": 0.6847826086956522,
+   "dollars_caught": 0.7472752451933498,
+   "pr_auc": 0.5884039599921729,
+   "flag_rate": 0.010100156362253306
+  },
+  "threshold": 0.018007041188958336,
+  "train": [
+   7,
+   27
+  ],
+  "holdout": [
+   28,
+   32
+  ]
+ },
+ "retrain-d070-db9kt": {
+  "version": "16",
+  "metrics": {
+   "n": 23504,
+   "n_fraud": 96,
+   "recall_at_budget": 0.7916666666666666,
+   "dollars_caught": 0.7668209591401316,
+   "pr_auc": 0.6528731105492038,
+   "flag_rate": 0.010083390061266167
+  },
+  "threshold": 0.02732079863994588,
+  "train": [
+   42,
+   62
+  ],
+  "holdout": [
+   63,
+   67
+  ]
+ },
+ "retrain-d077-rdc4n": {
+  "version": "17",
+  "metrics": {
+   "n": 23751,
+   "n_fraud": 107,
+   "recall_at_budget": 0.7476635514018691,
+   "dollars_caught": 0.6617325248927792,
+   "pr_auc": 0.6515249261198583,
+   "flag_rate": 0.010104837691044588
+  },
+  "threshold": 0.03036987149990434,
+  "train": [
+   49,
+   69
+  ],
+  "holdout": [
+   70,
+   74
+  ]
+ },
+ "retrain-d084-t5ckf": {
+  "version": "18",
+  "metrics": {
+   "n": 23072,
+   "n_fraud": 110,
+   "recall_at_budget": 0.7545454545454545,
+   "dollars_caught": 0.5904282329844167,
+   "pr_auc": 0.6612098630522993,
+   "flag_rate": 0.010142163661581138
+  },
+  "threshold": 0.03536499486389815,
+  "train": [
+   56,
+   76
+  ],
+  "holdout": [
+   77,
+   81
+  ]
+ },
+ "retrain-d091-hmcdt": {
+  "version": "19",
+  "metrics": {
+   "n": 23569,
+   "n_fraud": 75,
+   "recall_at_budget": 0.7066666666666667,
+   "dollars_caught": 0.7927577842882314,
+   "pr_auc": 0.5002358732223675,
+   "flag_rate": 0.010098010098010098
+  },
+  "threshold": 0.02508747814235092,
+  "train": [
+   63,
+   83
+  ],
+  "holdout": [
+   84,
+   88
+  ]
+ },
+ "retrain-d098-5dcg7": {
+  "version": "20",
+  "metrics": {
+   "n": 23042,
+   "n_fraud": 86,
+   "recall_at_budget": 0.7209302325581395,
+   "dollars_caught": 0.7245737144559397,
+   "pr_auc": 0.6431436974616223,
+   "flag_rate": 0.010111969447096606
+  },
+  "threshold": 0.03510225874707859,
+  "train": [
+   70,
+   90
+  ],
+  "holdout": [
+   91,
+   95
+  ]
+ },
+ "retrain-d105-zbtxb": {
+  "version": "21",
+  "metrics": {
+   "n": 24040,
+   "n_fraud": 92,
+   "recall_at_budget": 0.7282608695652174,
+   "dollars_caught": 0.7307507991031776,
+   "pr_auc": 0.5994287414637526,
+   "flag_rate": 0.010066555740432612
+  },
+  "threshold": 0.026967036279376983,
+  "train": [
+   77,
+   97
+  ],
+  "holdout": [
+   98,
+   102
+  ]
+ }
+}
