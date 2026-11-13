@@ -8,7 +8,7 @@ Fraud patterns change, and a model trained last month quietly gets worse. This p
 
 <p align="center"><img src="assets/video/walkthrough.gif" alt="Walkthrough: the lifecycle timeline for a new fraud pattern, with a drift alarm, the promotion gate, a canary rollout to 20, 50 and 100 percent, then the Grafana dashboard" width="900"></p>
 
-<p align="center"><a href="assets/video/walkthrough.mp4">Video (MP4)</a> · <a href="site/index.html">Results site</a> · <a href="results/summary_test.md">Full results table</a></p>
+<p align="center"><a href="assets/video/walkthrough.mp4">Video (MP4)</a> · <a href="https://charlie-gzz.github.io/fraud-model-lifecycle/">Live results site</a> · <a href="results/summary_test.md">Full results table</a></p>
 
 ## Headline
 

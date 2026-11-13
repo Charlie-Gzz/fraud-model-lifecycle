@@ -1,6 +1,5 @@
-# Publishes site/ to GitHub Pages. Prepared but NOT enabled: it only runs by hand
-# (workflow_dispatch), and Pages is off in the repo settings. Charlie turns it on after
-# the repo goes public (see docs/HANDOFF.md, pre-public checklist).
+# Publishes site/ to GitHub Pages (enabled 2026-11-13, source: GitHub Actions).
+# Runs by hand only (workflow_dispatch): rerun it after `fml assets` changes the site.
 name: pages
 
 on:

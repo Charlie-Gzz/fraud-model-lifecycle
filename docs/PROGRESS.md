@@ -28,6 +28,8 @@
 
 - 2026-11-13: Charlie accepted all five recommendations; recorded in QUESTIONS, HANDOFF and DECISIONS. No code changes needed.
 
+- 2026-11-13: GitHub Pages enabled (source: GitHub Actions) and the site deployed: https://charlie-gzz.github.io/fraud-model-lifecycle/. All pages, data files and Evidently reports return 200; the timeline renders. Repo homepage set to the site.
+
 ## Next step
-- Open: enabling GitHub Pages (workflow `pages.yml` is ready, manual trigger), only when Charlie asks.
+- Nothing open. To refresh the live site after changing it: `uv run fml assets`, commit, push, then `gh workflow run pages.yml`.
 - To bring everything back: `uv run fml up` (images are cached), then `uv run fml demo`.
