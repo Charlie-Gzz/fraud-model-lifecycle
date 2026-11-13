@@ -80,14 +80,9 @@ def site_screens() -> None:
         page.wait_for_selector("#chart svg")
         time.sleep(1)
         shot(page, "timeline")
-        markers = page.locator(".marker")
-        target = None
-        for i in range(markers.count()):
-            if "Promoted" in (markers.nth(i).get_attribute("aria-label") or ""):
-                target = markers.nth(i)
-                if i > 2:
-                    break
-        (target or markers.first).click()
+        promoted = page.locator('.marker[aria-label^="Promoted"]')
+        # The second promotion is the first drift-triggered one (the first is the bootstrap).
+        (promoted.nth(1) if promoted.count() > 1 else page.locator(".marker").first).click()
         time.sleep(0.5)
         shot(page, "timeline_event_detail")
         drift = page.locator('.marker[aria-label^="Drift detected"]')
@@ -103,9 +98,15 @@ def site_screens() -> None:
         time.sleep(1)
         shot(page, "timeline_mobile")
         reports = sorted((REPO_ROOT / "site" / "reports").glob("*/*.html"))
+        # Prefer a report where data drift was found (amount drift, then new category).
+        for prefer in ("amount-drift", "new-category"):
+            chosen = [r for r in reports if prefer in r.parent.name]
+            if chosen:
+                reports = chosen
+                break
         if reports:
             page.set_viewport_size(VIEW)
-            rel = reports[len(reports) // 2].relative_to(REPO_ROOT / "site").as_posix()
+            rel = reports[0].relative_to(REPO_ROOT / "site").as_posix()
             page.goto(f"{base}/{rel}", wait_until="networkidle")
             time.sleep(3)
             shot(page, "evidently_report")

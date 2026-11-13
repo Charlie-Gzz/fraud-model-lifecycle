@@ -141,9 +141,10 @@ def check(req: RunRequest) -> dict:
         wf = k8s.submit_retrain(req.run, d, req.seed + d, dec.reason)
         out["workflow"] = wf
         after_retrain(state, dec, d, params)
-        _save_state(req.run, state)
         RETRAINS.labels("drift").inc()
         events.emit(req.run, d, "retrain_started", "monitor", dec.reason, workflow=wf)
+    # Save every day, not only on retrains: the drift streak lives in this state.
+    _save_state(req.run, state)
     storage.put_json(f"runs/{req.run}/monitor/day={d:03d}.json", out)
     return out
 

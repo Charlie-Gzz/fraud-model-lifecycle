@@ -94,7 +94,8 @@
     const H = yCh0 + hChamp + 26;
     const days = current.days;
     const evDays = current.events.map((e) => e.day);
-    const d0 = Math.min(days[0].day, ...evDays), d1 = days[days.length - 1].day;
+    // Pad the left edge a little so early markers clear the lane labels.
+    const d0 = Math.min(days[0].day, ...evDays) - 1.5, d1 = days[days.length - 1].day;
     const x = (d) => m.l + ((d - d0) / Math.max(1, d1 - d0)) * (W - m.l - m.r);
     const yP = (v) => yTop0 + hTop - v * hTop;
     const dmax = Math.max(0.3, ...days.map((d) => d.drift || 0)) * 1.1;
