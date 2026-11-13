@@ -1,0 +1,13 @@
+{
+  "text": "When a new fraud pattern appeared, drift-triggered retraining recovered 13% of the lost fraud catch, the same as weekly retraining (13%); neither got back to 95% of the pre-drift catch before the run ended. It needed 3.8 retrains instead of 10, and 0 false retrains on the no-drift control (weekly retraining: 10).",
+  "fraud_caught_after_drift": {
+    "drift": 0.566507466626548,
+    "scheduled": 0.566119344946923,
+    "none": 0.535696120715794
+  },
+  "control_retrains": {
+    "drift": 0.0,
+    "scheduled": 10.0,
+    "none": 0.0
+  }
+}

@@ -27,11 +27,11 @@ infra/**/terraform.tfvars
 crash.log
 
 # Generated data (regenerable from seeds)
-data/
-cache/
-mlruns/
-mlartifacts/
-spark-warehouse/
+/data/
+/cache/
+/mlruns/
+/mlartifacts/
+/spark-warehouse/
 *.parquet
 
 # Video intermediates

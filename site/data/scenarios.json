@@ -1,0 +1,30 @@
+[
+ {
+  "scenario": "new_fraud_pattern",
+  "label": "New fraud pattern (concept drift)",
+  "source": "fullloop",
+  "run": "test-new-fraud-pattern-s201-11122325",
+  "file": "data/timeline-new_fraud_pattern.json"
+ },
+ {
+  "scenario": "new_category",
+  "label": "New merchant category",
+  "source": "fullloop",
+  "run": "test-new-category-s201-11130025",
+  "file": "data/timeline-new_category.json"
+ },
+ {
+  "scenario": "amount_drift",
+  "label": "Amounts creep up (covariate drift)",
+  "source": "fullloop",
+  "run": "test-amount-drift-s201-11130106",
+  "file": "data/timeline-amount_drift.json"
+ },
+ {
+  "scenario": "control",
+  "label": "Control (no drift)",
+  "source": "fullloop",
+  "run": "test-control-s201-11130150",
+  "file": "data/timeline-control.json"
+ }
+]
