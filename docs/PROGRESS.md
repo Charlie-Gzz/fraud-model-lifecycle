@@ -26,6 +26,8 @@
 
 - 2026-11-13: At Charlie's request the repo was made **public**. Generated reports and charts marked `linguist-generated` so the language bar reflects the code (GitHub was counting 227 MB of Evidently HTML). README verified on GitHub: all 9 images served. Pages not enabled yet.
 
+- 2026-11-13: Charlie accepted all five recommendations; recorded in QUESTIONS, HANDOFF and DECISIONS. No code changes needed.
+
 ## Next step
-- Open: answers to `docs/QUESTIONS_FOR_CHARLIE.md`; enabling GitHub Pages (workflow `pages.yml` is ready, manual trigger).
+- Open: enabling GitHub Pages (workflow `pages.yml` is ready, manual trigger), only when Charlie asks.
 - To bring everything back: `uv run fml up` (images are cached), then `uv run fml demo`.

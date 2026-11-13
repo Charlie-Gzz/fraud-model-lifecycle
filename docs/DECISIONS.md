@@ -62,3 +62,13 @@ Choices a reviewer might question. Newest at the bottom of each section.
 | Fonts in charts fall back to DejaVu Sans | bundle Inter | Plan allows the fallback; Inter is a variable font that matplotlib renders poorly. The site uses Inter and JetBrains Mono from Google Fonts. | yes |
 | `.gitignore` uses root-anchored `/data/` | `data/` | `data/` also ignored `src/fml/data` and `site/data`; CI caught it before handoff. | yes |
 | `fml apply` restores the live MODEL_VERSION after `kubectl apply -k` | plain apply | Re-applying the manifests would otherwise start a canary back to "no model". | yes |
+
+## Confirmed by Charlie (2026-11-13)
+
+| Decision | Options considered | Why | Easy to change? |
+|---|---|---|---|
+| Keep SeaweedFS as the S3 store | MinIO, local volume | MinIO images are no longer published; code only needs an S3 endpoint | yes |
+| Keep drift policy v3 and tell the v1 to v3 story openly | further tuning | Frozen before the test set; the history is documented in README and `results/archive/` | no (test set seen) |
+| Headline: "same catch, 65% fewer retrains, zero when nothing changed", new-pattern limit stated plainly | "drift-triggered wins" | That is what the test numbers show | yes |
+| Leave the scam pattern as is | make it easier to catch | Changing it after seeing the test set would bias the result | no |
+| Keep one shared runtime image for now | split scorer and trainer images | Works within the memory plan; a split would save about 0.6 GB | yes |

@@ -46,6 +46,7 @@ No cluster needed: `uv run fml results` recomputes every number, `uv run fml ass
 - Docs: `docs/DECISIONS.md`, `docs/QUESTIONS_FOR_CHARLIE.md`, `docs/PROGRESS.md`, `docs/DEMO_SCRIPT.md`, `docs/SLIDES_OUTLINE.md`, `docs/PORTFOLIO_CARD.md`
 
 ## Top questions (my recommendation first; details in QUESTIONS_FOR_CHARLIE.md)
+**Answered 2026-11-13: all recommendations accepted.**
 1. **SeaweedFS instead of MinIO?** Keep it (MinIO images are gone; any S3 endpoint works).
 2. **Keep the final drift policy (v3)?** Yes, and tell the v1 to v3 story openly.
 3. **Headline framing?** "Same catch, 65% fewer retrains, zero when nothing changed", with the new-pattern limit stated plainly.
@@ -69,7 +70,7 @@ Cost: $0 (local Docker Desktop only, no cloud, no API keys).
 gitleaks v8.30.1 (Docker) over the full git history: **no leaks found**. A scan of the working directory found 199 matches, all in untracked or ignored files (`.venv` library test fixtures, `.env`, local Terraform state, `.run/`); **none in any tracked file**. Local passwords live only in `.env` (gitignored) and in Kubernetes Secrets inside the (now deleted) cluster.
 
 ## Pre-public checklist
-1. Read README and HANDOFF; answer the questions.
+1. Read README and HANDOFF; answer the questions (done 2026-11-13: recommendations accepted).
 2. Skim screenshots and video for anything personal.
 3. Confirm the secret scan was clean and nothing from your employer appears.
 4. Make the repo public (done 2026-11-13), then enable GitHub Pages.
