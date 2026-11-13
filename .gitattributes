@@ -5,3 +5,11 @@
 *.mp4 binary
 *.webm binary
 *.ico binary
+
+# Generated files: excluded from GitHub's language stats (Evidently reports embed Plotly).
+site/reports/** linguist-generated
+results/fullloop/**/reports/** linguist-generated
+site/compare.html linguist-generated
+site/charts/** linguist-generated
+assets/charts/*.svg linguist-generated
+k8s/dashboard.yaml linguist-generated
