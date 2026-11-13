@@ -40,8 +40,14 @@ STOLEN_CARD_RATE = 3.0
 SCAM_RATE = 6.0
 CRYPTO_FRAUD_RATE = 4.0
 APP_BURST_RATE = 25.0  # legit: bursts of in-app purchases
-PATTERNS = ["card_testing", "account_takeover", "stolen_card", "scam", "crypto_cashout",
-            "app_burst"]
+PATTERNS = [
+    "card_testing",
+    "account_takeover",
+    "stolen_card",
+    "scam",
+    "crypto_cashout",
+    "app_burst",
+]
 
 
 @dataclass
