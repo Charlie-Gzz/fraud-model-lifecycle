@@ -14,7 +14,32 @@ Fraud patterns change, and a model trained last month quietly gets worse. This p
 
 ## Results
 
-<!-- RESULTS -->
+Fast backtest on the **test** scenarios (5 seeds each, settings frozen on separate dev scenarios first). Mean across seeds; full table with min to max in [`results/summary_test.md`](results/summary_test.md).
+
+| Scenario | Fraud caught after drift: drift-triggered | Weekly retraining | No retraining | Retrains: drift-triggered vs weekly | Time to detect |
+|---|---|---|---|---|---|
+| New fraud pattern (concept drift) | 56.7% | 56.6% | 53.6% | 3.8 vs 10 | 10.2 days (5 to 22) |
+| New merchant category | 69.3% | 69.5% | 63.6% | 4.4 vs 10 | 8.0 days (8 to 8) |
+| Amounts creep up (covariate drift) | 74.1% | 73.8% | 71.7% | 6.0 vs 10 | 5.2 days (5 to 6) |
+| Control (no drift) | 77.9% | 77.9% | 77.9% | 0 vs 10 | 2 alarms, both inside the cooldown, so 0 retrains |
+
+"Fraud caught" is recall inside the daily 1% review budget, pooled from the drift start (day 65) to day 109. Before drift, all policies catch about 77%.
+
+What this says:
+- **Same catch, far fewer retrains.** Drift-triggered retraining matched weekly retraining within 0.3 points in every scenario, with 14 retrains instead of 40 across the four (65% fewer), and none when nothing changed.
+- **Where it does not help.** A new fraud pattern that looks like normal behavior barely moves the inputs (largest feature drift 0.02 to 0.04 when the alarm fires, against a 0.1 threshold). It is only caught when settled labels show recall falling, 5 to 22 days after it starts. By then neither policy can win back more than 13% of the lost catch: the new pattern is still a small, late-labeled share of the training window.
+- **Feature drift is fast when it is real.** A new merchant category is flagged on day 8 in every seed, rising amounts on day 5 or 6. Prediction drift (the score distribution) never fired in any run.
+
+![Fraud caught over time per scenario and policy, with seed bands](assets/charts/fraud_caught_over_time.png)
+
+<!-- FULLLOOP -->
+
+| Also measured | Result |
+|---|---|
+| Canary safety | A deliberately broken model (binary expects 11 features, metadata says 12) was rolled back by the Prometheus error-rate analysis in 52 s; the champion kept serving ([`results/cluster/broken_model_rollback.json`](results/cluster/broken_model_rollback.json)) |
+| Scorer latency | 424 requests/s, p50 34 ms, p95 67 ms, 0 errors (single-transaction requests, 5 pods, laptop) ([`results/cluster/loadtest.json`](results/cluster/loadtest.json)) |
+| Platform memory | about 4.0 GB idle, peak <!-- PEAKMEM --> during a full-loop run (`docker stats` on the kind node) |
+
 
 ## Architecture
 

@@ -6,6 +6,8 @@ from __future__ import annotations
 import json
 import shutil
 
+import numpy as np
+
 from fml import REPO_ROOT, results
 from fml.replay import agreement
 from fml.site import build as site_build
@@ -84,18 +86,20 @@ def plotly_page(set_name: str) -> None:
             style = theme.POLICY_STYLE[policy]
             days, m = charts._rolling_matrix(runs)
             dash = {"-": "solid", "--": "dash", ":": "dot"}[style["linestyle"]]
-            for i, r in enumerate(runs):
+            h = style["color"].lstrip("#")
+            rgba = f"rgba({int(h[0:2], 16)},{int(h[2:4], 16)},{int(h[4:6], 16)},0.15)"
+            for bound, fill in ((m.min(0), None), (m.max(0), "tonexty")):
                 fig.add_trace(
                     go.Scatter(
                         x=days,
-                        y=100 * m[i],
+                        y=100 * bound,
                         mode="lines",
-                        line={"color": style["color"], "width": 1, "dash": dash},
-                        opacity=0.35,
+                        line={"width": 0},
+                        fill=fill,
+                        fillcolor=rgba,
                         legendgroup=policy,
                         showlegend=False,
-                        name=f"{style['label']} seed {r['seed']}",
-                        hovertemplate="day %{x}<br>%{y:.1f}% caught<extra>%{fullData.name}</extra>",
+                        hoverinfo="skip",
                     ),
                     row=row,
                     col=col,
@@ -109,20 +113,27 @@ def plotly_page(set_name: str) -> None:
                     line={"color": style["color"], "width": 3, "dash": dash},
                     legendgroup=policy,
                     showlegend=k == 0,
+                    customdata=100 * np.stack([m.min(0), m.max(0)], axis=1),
                     hovertemplate="day %{x}<br>mean %{y:.1f}% caught"
+                    "<br>seeds %{customdata[0]:.1f}% to %{customdata[1]:.1f}%"
                     "<extra>%{fullData.name}</extra>",
                 ),
                 row=row,
                 col=col,
             )
     fig.update_layout(
-        title="Fraud caught at the 1% budget (7-day rolling): thin lines are single seeds",
-        template="plotly_dark",
+        title="Fraud caught at the 1% budget (7-day rolling): band = min to max across seeds",
+        template="none",
         paper_bgcolor=theme.BG,
         plot_bgcolor=theme.PANEL,
         font={"family": "Inter, sans-serif", "color": theme.TEXT},
         height=820,
         legend={"orientation": "h", "y": -0.08},
+        hoverlabel={
+            "bgcolor": theme.PANEL,
+            "font": {"color": theme.TEXT},
+            "bordercolor": theme.BORDER,
+        },
         margin={"l": 60, "r": 20, "t": 80, "b": 60},
     )
     fig.update_yaxes(range=[30, 100], gridcolor=theme.BORDER, ticksuffix="%")
