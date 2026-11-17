@@ -43,9 +43,9 @@ No cluster needed: `uv run fml results` recomputes every number, `uv run fml ass
 - Architecture diagram: `assets/diagrams/architecture.svg` / `.png`
 - Site: `site/`, live at https://charlie-gzz.github.io/fraud-model-lifecycle/ (published by `.github/workflows/pages.yml`, manual trigger: rerun it after `fml assets` changes the site)
 - Results: `results/summary_test.md`, `results/backtest/`, `results/fullloop/`, `results/cluster/`
-- Docs: `docs/DECISIONS.md`, `docs/QUESTIONS_FOR_CHARLIE.md`, `docs/PROGRESS.md`, `docs/DEMO_SCRIPT.md`, `docs/SLIDES_OUTLINE.md`, `docs/PORTFOLIO_CARD.md`
+- Docs: `docs/DECISIONS.md`, `docs/PROGRESS.md`, `docs/DEMO_SCRIPT.md`, `docs/SLIDES_OUTLINE.md`, `docs/PORTFOLIO_CARD.md`
 
-## Top questions (my recommendation first; details in QUESTIONS_FOR_CHARLIE.md)
+## Top questions (my recommendation first)
 **Answered 2026-11-13: all recommendations accepted.**
 1. **SeaweedFS instead of MinIO?** Keep it (MinIO images are gone; any S3 endpoint works).
 2. **Keep the final drift policy (v3)?** Yes, and tell the v1 to v3 story openly.
